@@ -7,7 +7,7 @@
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/yoanm/jsonrpc-params-symfony-constraint-doc-sdk.svg)](https://packagist.org/packages/yoanm/jsonrpc-params-symfony-constraint-doc-sdk) [![Packagist PHP version](https://img.shields.io/packagist/php-v/yoanm/jsonrpc-params-symfony-constraint-doc-sdk.svg)](https://packagist.org/packages/yoanm/jsonrpc-params-symfony-constraint-doc-sdk)
 
-SDK to generate JSON-RPC documentation from symfony constraint
+PHP SDK to generate JSON-RPC documentation from symfony constraint
 
 ## How to use
 
