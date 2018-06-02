@@ -101,74 +101,75 @@ class DocTypeHelper
      */
     private function guessTypeFromConstraint(Constraint $constraint)
     {
+        static $stringConstraintClassList = [
+            Assert\Length::class, // << Applied on string only
+            Assert\Date::class,  // << validator expect a string with specific format
+            Assert\Time::class,  // << validator expect a string with specific format
+            Assert\Bic::class,
+            Assert\CardScheme::class,
+            Assert\Country::class,
+            Assert\Currency::class,
+            Assert\Email::class,
+            Assert\File::class,
+            Assert\Iban::class,
+            Assert\Ip::class,
+            Assert\Isbn::class,
+            Assert\Issn::class,
+            Assert\Language::class,
+            Assert\Locale::class,
+            Assert\Luhn::class,
+            Assert\Regex::class,
+            Assert\Url::class,
+            Assert\Uuid::class,
+        ];
+        static $booleanConstraintClassList = [
+            Assert\IsTrue::class,
+            Assert\IsFalse::class,
+        ];
+        $constraintClass = get_class($constraint);
+
         // Try to guess primary types
-        switch (true) {
-            case $constraint instanceof Assert\Existence:
-                return $this->guess($constraint->constraints);
-            case $constraint instanceof Assert\Length:// << Applied on string only
-            case $constraint instanceof Assert\Date: // << validator expect a string with specific format
-            case $constraint instanceof Assert\Time: // << validator expect a string with specific format
-            case $constraint instanceof Assert\Bic:
-            case $constraint instanceof Assert\CardScheme:
-            case $constraint instanceof Assert\Country:
-            case $constraint instanceof Assert\Currency:
-            case $constraint instanceof Assert\Email:
-            case $constraint instanceof Assert\File:
-            case $constraint instanceof Assert\Iban:
-            case $constraint instanceof Assert\Ip:
-            case $constraint instanceof Assert\Isbn:
-            case $constraint instanceof Assert\Issn:
-            case $constraint instanceof Assert\Language:
-            case $constraint instanceof Assert\Locale:
-            case $constraint instanceof Assert\Luhn:
-            case $constraint instanceof Assert\Regex:
-            case $constraint instanceof Assert\Url:
-            case $constraint instanceof Assert\Uuid:
-                return new StringDoc();
-            case $constraint instanceof Assert\DateTime:
-                if ('U' === $constraint->format) {
-                    return new ScalarDoc();// Don't know if value will be an number as string or as integer
-                }
+        if (in_array($constraintClass, $stringConstraintClassList)) {
+            return new StringDoc();
+        } elseif (in_array($constraintClass, $booleanConstraintClassList)) {
+            return new BooleanDoc();
+        } elseif ($constraint instanceof Assert\DateTime) {
+            if ('U' === $constraint->format) {
+                return new ScalarDoc();// Don't know if value will be an number as string or as integer
+            }
 
-                return new StringDoc();
-            case $constraint instanceof Assert\IsTrue:
-            case $constraint instanceof Assert\IsFalse:
-                return new BooleanDoc();
-            case $constraint instanceof Assert\Collection:
-                // If only integer => array, else object
-                $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
-                if (count($constraint->fields) === count($integerKeyList)) {
-                    return new ArrayDoc();
-                }
-
-                return new ObjectDoc();
-            case $constraint instanceof Assert\Choice
-                && true === $constraint->multiple: // << expect an array multiple choices
-            case $constraint instanceof Assert\All: // << Applied only on array
+            return new StringDoc();
+        } elseif ($constraint instanceof Assert\Collection) {
+            // If only integer => array, else object
+            $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
+            if (count($constraint->fields) === count($integerKeyList)) {
                 return new ArrayDoc();
+            }
+
+            return new ObjectDoc();
+        } elseif (Assert\All::class === $constraintClass // << Applied only on array
+            || ($constraint instanceof Assert\Choice
+                && true === $constraint->multiple // << expect an array multiple choices
+            )
+        ) {
+            return new ArrayDoc();
         }
 
         // If primary type is still not defined
-        switch (true) {
-            case $constraint instanceof Assert\Range:
-                if ((null !== $constraint->min && is_float($constraint->min))
-                    || (null !== $constraint->max && is_float($constraint->max))
-                ) {
-                    return new FloatDoc();
-                }
-
-                return new NumberDoc();
-            case $constraint instanceof Assert\GreaterThan:
-            case $constraint instanceof Assert\GreaterThanOrEqual:
-            case $constraint instanceof Assert\LessThan:
-            case $constraint instanceof Assert\LessThanOrEqual:
-                if (null !== $constraint->value && is_float($constraint->value)) {
-                    return new FloatDoc();
-                }
-
-                return new NumberDoc();
-            case $constraint instanceof Assert\Count:
-                return new CollectionDoc();
+        static $numberOrFloatConstraintClassList = [
+            Assert\GreaterThan::class,
+            Assert\GreaterThanOrEqual::class,
+            Assert\LessThan::class,
+            Assert\LessThanOrEqual::class,
+        ];
+        if ($constraint instanceof Assert\Range) {
+            return $this->floatOrNumber([$constraint->min, $constraint->max]);
+        } elseif (in_array($constraintClass, $numberOrFloatConstraintClassList)) {
+            return $this->floatOrNumber([$constraint->value]);
+        } elseif (Assert\Count::class == $constraintClass) {
+            return new CollectionDoc();
+        } elseif ($constraint instanceof Assert\Existence) {
+            return $this->guess($constraint->constraints);
         }
 
         return null;
@@ -181,21 +182,20 @@ class DocTypeHelper
      */
     private function getDocFromType(string $type)
     {
-        switch (true) {
-            case 'scalar' === $type:
-                return new ScalarDoc();
-            case 'string' === $type:
-                return new StringDoc();
-            case 'bool' === $type || 'boolean' === $type:
-                return new BooleanDoc();
-            case 'int' === $type || 'integer' === $type:
-                return new IntegerDoc();
-            case in_array($type, ['float', 'long', 'double', 'real', 'numeric']):
-                return new FloatDoc();
-            case 'array' === $type:
-                return new ArrayDoc();
-            case 'object' === $type:
-                return new ObjectDoc();
+        if ('scalar' === $type) {
+            return new ScalarDoc();
+        } elseif ('string' === $type) {
+            return new StringDoc();
+        } elseif ('bool' === $type || 'boolean' === $type) {
+            return new BooleanDoc();
+        } elseif ('int' === $type || 'integer' === $type) {
+            return new IntegerDoc();
+        } elseif (in_array($type, ['float', 'long', 'double', 'real', 'numeric'])) {
+            return new FloatDoc();
+        } elseif ('array' === $type) {
+            return new ArrayDoc();
+        } elseif ('object' === $type) {
+            return new ObjectDoc();
         }
 
         return null;
@@ -215,5 +215,21 @@ class DocTypeHelper
             || NumberDoc::class === $class
             || ScalarDoc::class === $class
         ;
+    }
+
+    /**
+     * @param array $basedOnList
+     *
+     * @return FloatDoc|NumberDoc
+     */
+    private function floatOrNumber(array $basedOnList)
+    {
+        foreach ($basedOnList as $value) {
+            if (null !== $value && is_float($value)) {
+                return new FloatDoc();
+            }
+        }
+
+        return new NumberDoc();
     }
 }

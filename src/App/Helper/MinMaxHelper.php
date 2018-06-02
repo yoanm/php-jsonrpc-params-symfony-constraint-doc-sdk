@@ -50,31 +50,27 @@ class MinMaxHelper
      */
     private function appendNumberDoc(NumberDoc $doc, Constraint $constraint)
     {
-        switch (true) {
-            case $constraint instanceof Assert\Range:
-                if (null !== $constraint->min) {
-                    $doc->setMin($constraint->min);
-                }
-                if (null !== $constraint->max) {
-                    $doc->setMax($constraint->max);
-                }
-                break;
-            case $constraint instanceof Assert\LessThanOrEqual:
-            case $constraint instanceof Assert\LessThan:
-                $doc->setMax($constraint->value);
-                break;
-            case $constraint instanceof Assert\GreaterThanOrEqual:
-            case $constraint instanceof Assert\GreaterThan:
-                $doc->setMin($constraint->value);
-                break;
-        }
-        switch (true) {
-            case $constraint instanceof Assert\GreaterThan:
-                $doc->setInclusiveMin(false);
-                break;
-            case $constraint instanceof Assert\LessThan:
+        if ($constraint instanceof Assert\Range) {
+            if (null !== $constraint->min) {
+                $doc->setMin($constraint->min);
+            }
+            if (null !== $constraint->max) {
+                $doc->setMax($constraint->max);
+            }
+        } elseif ($constraint instanceof Assert\LessThanOrEqual
+            || $constraint instanceof Assert\LessThan
+        ) {
+            $doc->setMax($constraint->value);
+            if ($constraint instanceof Assert\LessThan) {
                 $doc->setInclusiveMax(false);
-                break;
+            }
+        } elseif ($constraint instanceof Assert\GreaterThanOrEqual
+            || $constraint instanceof Assert\GreaterThan
+        ) {
+            $doc->setMin($constraint->value);
+            if ($constraint instanceof Assert\GreaterThan) {
+                $doc->setInclusiveMin(false);
+            }
         }
     }
 

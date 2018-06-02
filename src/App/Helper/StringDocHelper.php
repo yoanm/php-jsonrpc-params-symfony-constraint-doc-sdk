@@ -22,28 +22,31 @@ class StringDocHelper
             return;
         }
 
-        switch (true) {
-            case $constraint instanceof Assert\Bic:
-            case $constraint instanceof Assert\CardScheme:
-            case $constraint instanceof Assert\Country:
-            case $constraint instanceof Assert\Currency:
-            case $constraint instanceof Assert\Date:
-            case $constraint instanceof Assert\DateTime:
-            case $constraint instanceof Assert\Email:
-            case $constraint instanceof Assert\File:
-            case $constraint instanceof Assert\Iban:
-            case $constraint instanceof Assert\Ip:
-            case $constraint instanceof Assert\Isbn:
-            case $constraint instanceof Assert\Issn:
-            case $constraint instanceof Assert\Language:
-            case $constraint instanceof Assert\Locale:
-            case $constraint instanceof Assert\Luhn:
-            case $constraint instanceof Assert\Regex:
-            case $constraint instanceof Assert\Time:
-            case $constraint instanceof Assert\Url:
-            case $constraint instanceof Assert\Uuid:
-                $doc->setFormat(lcfirst((new \ReflectionClass($constraint))->getShortName()));
-                break;
+        $constraintClass = get_class($constraint);
+        $constraintForFormatList = [
+            Assert\Bic::class,
+            Assert\CardScheme::class,
+            Assert\Country::class,
+            Assert\Currency::class,
+            Assert\Date::class,
+            Assert\DateTime::class,
+            Assert\Email::class,
+            Assert\File::class,
+            Assert\Iban::class,
+            Assert\Ip::class,
+            Assert\Isbn::class,
+            Assert\Issn::class,
+            Assert\Language::class,
+            Assert\Locale::class,
+            Assert\Luhn::class,
+            Assert\Regex::class,
+            Assert\Time::class,
+            Assert\Url::class,
+            Assert\Uuid::class,
+        ];
+
+        if (in_array($constraintClass, $constraintForFormatList)) {
+            $doc->setFormat(lcfirst((new \ReflectionClass($constraint))->getShortName()));
         }
     }
 }
