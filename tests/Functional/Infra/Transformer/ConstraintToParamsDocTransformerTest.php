@@ -82,7 +82,7 @@ class ConstraintToParamsDocTransformerTest extends TestCase
     public function testShouldHandleChoiceConstraintWithCallback()
     {
         $choiceList = ['a', 'b'];
-        $choiceCallback = function() use ($choiceList) {
+        $choiceCallback = function () use ($choiceList) {
             return $choiceList;
         };
 
@@ -150,8 +150,6 @@ class ConstraintToParamsDocTransformerTest extends TestCase
         $this->assertTrue($doc->isAllowExtraSibling());
     }
 
-
-
     public function testShouldHandleCollectionConstraintAsObjectDoc()
     {
         $fieldsConstraintList = ['key1' => new Assert\Type('string'), 'key2' => new Assert\Type('integer')];
@@ -181,5 +179,38 @@ class ConstraintToParamsDocTransformerTest extends TestCase
         $this->assertSame('key2', $subDoc2->getName());
         $this->assertTrue($doc->isAllowMissingSibling());
         $this->assertTrue($doc->isAllowExtraSibling());
+    }
+
+
+
+    public function testPayloadDocShouldOverrideAnything()
+    {
+        $constraint = new Assert\NotNull();
+
+        $doc = new IntegerDoc();
+        $this->assertTrue($doc->isNullable());
+
+        $this->docTypeHelper->guess([$constraint])
+            ->willReturn($doc)
+            ->shouldBeCalled()
+        ;
+        $self = $this;
+        $this->constraintPayloadDocHelper->appendPayloadDoc($doc, $constraint)
+            ->will(function ($args) use ($self) {
+                /** @var IntegerDoc $doc */
+                $doc = $args[0];
+                $self->assertFalse($doc->isNullable());
+
+                // Set it back to true
+                $doc->setNullable(true);
+            })
+            ->shouldBeCalled()
+        ;
+
+        $newDoc = $this->transformer->transform($constraint);
+
+        $this->assertSame($doc, $newDoc);
+        // Check is still true even if constraint is NotNul
+        $this->assertTrue($doc->isNullable());
     }
 }
