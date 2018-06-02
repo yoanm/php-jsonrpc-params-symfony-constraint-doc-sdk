@@ -101,58 +101,8 @@ class DocTypeHelper
      */
     private function guessTypeFromConstraint(Constraint $constraint)
     {
-        static $stringConstraintClassList = [
-            Assert\Length::class, // << Applied on string only
-            Assert\Date::class,  // << validator expect a string with specific format
-            Assert\Time::class,  // << validator expect a string with specific format
-            Assert\Bic::class,
-            Assert\CardScheme::class,
-            Assert\Country::class,
-            Assert\Currency::class,
-            Assert\Email::class,
-            Assert\File::class,
-            Assert\Iban::class,
-            Assert\Ip::class,
-            Assert\Isbn::class,
-            Assert\Issn::class,
-            Assert\Language::class,
-            Assert\Locale::class,
-            Assert\Luhn::class,
-            Assert\Regex::class,
-            Assert\Url::class,
-            Assert\Uuid::class,
-        ];
-        static $booleanConstraintClassList = [
-            Assert\IsTrue::class,
-            Assert\IsFalse::class,
-        ];
-        $constraintClass = get_class($constraint);
-
-        // Try to guess primary types
-        if (in_array($constraintClass, $stringConstraintClassList)) {
-            return new StringDoc();
-        } elseif (in_array($constraintClass, $booleanConstraintClassList)) {
-            return new BooleanDoc();
-        } elseif ($constraint instanceof Assert\DateTime) {
-            if ('U' === $constraint->format) {
-                return new ScalarDoc();// Don't know if value will be an number as string or as integer
-            }
-
-            return new StringDoc();
-        } elseif ($constraint instanceof Assert\Collection) {
-            // If only integer => array, else object
-            $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
-            if (count($constraint->fields) === count($integerKeyList)) {
-                return new ArrayDoc();
-            }
-
-            return new ObjectDoc();
-        } elseif (Assert\All::class === $constraintClass // << Applied only on array
-            || ($constraint instanceof Assert\Choice
-                && true === $constraint->multiple // << expect an array multiple choices
-            )
-        ) {
-            return new ArrayDoc();
+        if (null !== ($type = $this->guessPrimaryTypeFromConstraint($constraint))) {
+            return $type;
         }
 
         // If primary type is still not defined
@@ -162,6 +112,7 @@ class DocTypeHelper
             Assert\LessThan::class,
             Assert\LessThanOrEqual::class,
         ];
+        $constraintClass = get_class($constraint);
         if ($constraint instanceof Assert\Range) {
             return $this->floatOrNumber([$constraint->min, $constraint->max]);
         } elseif (in_array($constraintClass, $numberOrFloatConstraintClassList)) {
@@ -231,5 +182,69 @@ class DocTypeHelper
         }
 
         return new NumberDoc();
+    }
+
+    /**
+     * @param Constraint $constraint
+     *
+     * @return null|ArrayDoc|BooleanDoc|ObjectDoc|ScalarDoc|StringDoc
+     */
+    private function guessPrimaryTypeFromConstraint(Constraint $constraint)
+    {
+        static $stringConstraintClassList = [
+            Assert\Length::class, // << Applied on string only
+            Assert\Date::class,  // << validator expect a string with specific format
+            Assert\Time::class,  // << validator expect a string with specific format
+            Assert\Bic::class,
+            Assert\CardScheme::class,
+            Assert\Country::class,
+            Assert\Currency::class,
+            Assert\Email::class,
+            Assert\File::class,
+            Assert\Iban::class,
+            Assert\Ip::class,
+            Assert\Isbn::class,
+            Assert\Issn::class,
+            Assert\Language::class,
+            Assert\Locale::class,
+            Assert\Luhn::class,
+            Assert\Regex::class,
+            Assert\Url::class,
+            Assert\Uuid::class,
+        ];
+        static $booleanConstraintClassList = [
+            Assert\IsTrue::class,
+            Assert\IsFalse::class,
+        ];
+        $constraintClass = get_class($constraint);
+
+        // Try to guess primary types
+        if (in_array($constraintClass, $stringConstraintClassList)) {
+            return new StringDoc();
+        } elseif (in_array($constraintClass, $booleanConstraintClassList)) {
+            return new BooleanDoc();
+        } elseif ($constraint instanceof Assert\DateTime) {
+            if ('U' === $constraint->format) {
+                return new ScalarDoc();// Don't know if value will be an number as string or as integer
+            }
+
+            return new StringDoc();
+        } elseif ($constraint instanceof Assert\Collection) {
+            // If only integer => array, else object
+            $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
+            if (count($constraint->fields) === count($integerKeyList)) {
+                return new ArrayDoc();
+            }
+
+            return new ObjectDoc();
+        } elseif (Assert\All::class === $constraintClass // << Applied only on array
+            || ($constraint instanceof Assert\Choice
+                && true === $constraint->multiple // << expect an array multiple choices
+            )
+        ) {
+            return new ArrayDoc();
+        }
+
+        return null;
     }
 }
