@@ -79,9 +79,9 @@ class DocTypeHelper
             return new ScalarDoc();
         } elseif ('string' === $type) {
             return new StringDoc();
-        } elseif ('bool' === $type || 'boolean' === $type) {
+        } elseif (in_array($type, ['bool', 'boolean'])) {
             return new BooleanDoc();
-        } elseif ('int' === $type || 'integer' === $type) {
+        } elseif (in_array($type, ['int', 'integer'])) {
             return new IntegerDoc();
         } elseif (in_array($type, ['float', 'long', 'double', 'real', 'numeric'])) {
             return new FloatDoc();
