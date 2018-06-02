@@ -28,6 +28,8 @@ class ConstraintPayloadDocHelper
             return;
         }
 
+        // /!\ Do not override value if payload have nothing defined for a key ! /!\
+
         $doc->setRequired(
             $this->getPayloadDocValue($constraint, self::PAYLOAD_DOCUMENTATION_REQUIRED_KEY) ?? $doc->isRequired()
         );
@@ -36,10 +38,10 @@ class ConstraintPayloadDocHelper
         );
 
         $doc->setExample(
-            $this->getPayloadDocValue($constraint, self::PAYLOAD_DOCUMENTATION_EXAMPLE_KEY)
+            $this->getPayloadDocValue($constraint, self::PAYLOAD_DOCUMENTATION_EXAMPLE_KEY) ?? $doc->getExample()
         );
         $doc->setDefault(
-            $this->getPayloadDocValue($constraint, self::PAYLOAD_DOCUMENTATION_DEFAULT_KEY)
+            $this->getPayloadDocValue($constraint, self::PAYLOAD_DOCUMENTATION_DEFAULT_KEY) ?? $doc->getDefault()
         );
 
         $description = $this->getPayloadDocValue($constraint, self::PAYLOAD_DOCUMENTATION_DESCRIPTION_KEY);
@@ -91,9 +93,6 @@ class ConstraintPayloadDocHelper
      */
     protected function hasPayloadDocKey(Constraint $constraint, string $documentationKey) : bool
     {
-        return array_key_exists(
-            $documentationKey,
-            $constraint->payload[self::PAYLOAD_DOCUMENTATION_KEY]
-        );
+        return array_key_exists($documentationKey, $constraint->payload[self::PAYLOAD_DOCUMENTATION_KEY]);
     }
 }

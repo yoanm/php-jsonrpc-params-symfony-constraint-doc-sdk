@@ -7,7 +7,6 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\MinMaxHelper;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
-use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;
 
 /**
  * @covers Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\MinMaxHelper
