@@ -236,7 +236,7 @@ class DocTypeHelper
 
     /**
      * @param Constraint $constraint
-     * 
+     *
      * @return null|ArrayDoc|ObjectDoc
      */
     private function guessComplexPrimaryType(Constraint $constraint)
