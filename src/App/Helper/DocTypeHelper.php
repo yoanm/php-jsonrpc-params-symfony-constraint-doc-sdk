@@ -76,14 +76,14 @@ class DocTypeHelper
         $doc = $abstractTypeFound = null;
         foreach ($constraintList as $constraint) {
             $doc = $this->guessTypeFromConstraint($constraint);
-             if (null !== $doc) {
-                 if ($this->isAbstractType($doc)) {
+            if (null !== $doc) {
+                if ($this->isAbstractType($doc)) {
                      // Abstract type => continue to see if better type can be found
                      $abstractTypeFound = $doc;
                      $doc = null;
-                 } else {
+                } else {
                      break;
-                 }
+                }
             }
         }
         // Try to fallback on abstractType if found
@@ -151,8 +151,7 @@ class DocTypeHelper
         // If primary type is still not defined
         switch (true) {
             case $constraint instanceof Assert\Range:
-                if (
-                    (null !== $constraint->min && is_float($constraint->min))
+                if ((null !== $constraint->min && is_float($constraint->min))
                     || (null !== $constraint->max && is_float($constraint->max))
                 ) {
                     return new FloatDoc();

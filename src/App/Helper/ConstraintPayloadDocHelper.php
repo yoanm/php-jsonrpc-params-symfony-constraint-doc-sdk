@@ -92,9 +92,8 @@ class ConstraintPayloadDocHelper
     protected function hasPayloadDocKey(Constraint $constraint, string $documentationKey) : bool
     {
         return array_key_exists(
-                $documentationKey,
-                $constraint->payload[self::PAYLOAD_DOCUMENTATION_KEY]
-            )
-        ;
+            $documentationKey,
+            $constraint->payload[self::PAYLOAD_DOCUMENTATION_KEY]
+        );
     }
 }

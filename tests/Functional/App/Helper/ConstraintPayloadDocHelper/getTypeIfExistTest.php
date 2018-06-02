@@ -13,7 +13,7 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
  *
  * @group Helper
  */
-class getTypeIfExistTest extends TestCase
+class GetTypeIfExistTest extends TestCase
 {
 
     /** @var ConstraintPayloadDocHelper */
