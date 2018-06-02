@@ -229,7 +229,19 @@ class DocTypeHelper
             }
 
             return new StringDoc();
-        } elseif ($constraint instanceof Assert\Collection) {
+        }
+
+        return $this->guessComplexPrimaryType($constraint);
+    }
+
+    /**
+     * @param Constraint $constraint
+     * 
+     * @return null|ArrayDoc|ObjectDoc
+     */
+    private function guessComplexPrimaryType(Constraint $constraint)
+    {
+        if ($constraint instanceof Assert\Collection) {
             // If only integer => array, else object
             $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
             if (count($constraint->fields) === count($integerKeyList)) {
@@ -237,7 +249,7 @@ class DocTypeHelper
             }
 
             return new ObjectDoc();
-        } elseif (Assert\All::class === $constraintClass // << Applied only on array
+        } elseif ($constraint instanceof Assert\All // << Applied only on array
             || ($constraint instanceof Assert\Choice
                 && true === $constraint->multiple // << expect an array multiple choices
             )
