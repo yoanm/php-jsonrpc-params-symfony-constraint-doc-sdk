@@ -50,27 +50,12 @@ class MinMaxHelper
      */
     private function appendNumberDoc(NumberDoc $doc, Constraint $constraint)
     {
-        if ($constraint instanceof Assert\Range) {
-            if (null !== $constraint->min) {
-                $doc->setMin($constraint->min);
-            }
-            if (null !== $constraint->max) {
-                $doc->setMax($constraint->max);
-            }
-        } elseif ($constraint instanceof Assert\LessThanOrEqual
-            || $constraint instanceof Assert\LessThan
-        ) {
-            $doc->setMax($constraint->value);
-            if ($constraint instanceof Assert\LessThan) {
-                $doc->setInclusiveMax(false);
-            }
-        } elseif ($constraint instanceof Assert\GreaterThanOrEqual
-            || $constraint instanceof Assert\GreaterThan
-        ) {
-            $doc->setMin($constraint->value);
-            if ($constraint instanceof Assert\GreaterThan) {
-                $doc->setInclusiveMin(false);
-            }
+        $this->appendNumberMinMax($doc, $constraint);
+
+        if ($constraint instanceof Assert\LessThan) {
+            $doc->setInclusiveMax(false);
+        } elseif ($constraint instanceof Assert\GreaterThan) {
+            $doc->setInclusiveMin(false);
         }
     }
 
@@ -87,6 +72,30 @@ class MinMaxHelper
             if (null !== $constraint->max) {
                 $doc->setMaxItem($constraint->max);
             }
+        }
+    }
+
+    /**
+     * @param NumberDoc $doc
+     * @param Constraint $constraint
+     */
+    private function appendNumberMinMax(NumberDoc $doc, Constraint $constraint)
+    {
+        if ($constraint instanceof Assert\Range) {
+            if (null !== $constraint->min) {
+                $doc->setMin($constraint->min);
+            }
+            if (null !== $constraint->max) {
+                $doc->setMax($constraint->max);
+            }
+        } elseif ($constraint instanceof Assert\LessThanOrEqual
+            || $constraint instanceof Assert\LessThan
+        ) {
+            $doc->setMax($constraint->value);
+        } elseif ($constraint instanceof Assert\GreaterThanOrEqual
+            || $constraint instanceof Assert\GreaterThan
+        ) {
+            $doc->setMin($constraint->value);
         }
     }
 }
