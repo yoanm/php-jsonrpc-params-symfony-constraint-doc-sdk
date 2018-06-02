@@ -224,31 +224,10 @@ class DocTypeHelper
         } elseif (in_array($constraintClass, $booleanConstraintClassList)) {
             return new BooleanDoc();
         } elseif ($constraint instanceof Assert\DateTime) {
-            if ('U' === $constraint->format) {
-                return new ScalarDoc();// Don't know if value will be an number as string or as integer
-            }
+            return $this->guessDateTimeType($constraint);
+        } elseif ($constraint instanceof Assert\Collection) {
+            return $this->guestCollectionType($constraint);
 
-            return new StringDoc();
-        }
-
-        return $this->guessComplexPrimaryType($constraint);
-    }
-
-    /**
-     * @param Constraint $constraint
-     *
-     * @return null|ArrayDoc|ObjectDoc
-     */
-    private function guessComplexPrimaryType(Constraint $constraint)
-    {
-        if ($constraint instanceof Assert\Collection) {
-            // If only integer => array, else object
-            $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
-            if (count($constraint->fields) === count($integerKeyList)) {
-                return new ArrayDoc();
-            }
-
-            return new ObjectDoc();
         } elseif ($constraint instanceof Assert\All // << Applied only on array
             || ($constraint instanceof Assert\Choice
                 && true === $constraint->multiple // << expect an array multiple choices
@@ -258,5 +237,35 @@ class DocTypeHelper
         }
 
         return null;
+    }
+
+    /**
+     * @param Assert\DateTime $constraint
+     *
+     * @return ScalarDoc|StringDoc
+     */
+    private function guessDateTimeType(Assert\DateTime $constraint)
+    {
+        if ('U' === $constraint->format) {
+            return new ScalarDoc();// Don't know if value will be an number as string or as integer
+        }
+
+        return new StringDoc();
+    }
+
+    /**
+     * @param Assert\Collection $constraint
+     *
+     * @return ArrayDoc|ObjectDoc
+     */
+    private function guestCollectionType(Assert\Collection $constraint)
+    {
+        // If only integer => array, else object
+        $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
+        if (count($constraint->fields) === count($integerKeyList)) {
+            return new ArrayDoc();
+        }
+
+        return new ObjectDoc();
     }
 }
