@@ -22,7 +22,14 @@ class GetTypeIfExistTest extends TestCase
         $this->helper = new ConstraintPayloadDocHelper();
     }
 
-    public function testShouldReturnNullIfNotDefined()
+    public function testShouldReturnNullIfNoPayload()
+    {
+        $constraint = new Assert\Valid();
+
+        $this->assertNull($this->helper->getTypeIfExist($constraint));
+    }
+
+    public function testShouldReturnNullIfTypeIsNotDefined()
     {
         $constraint = new Assert\Valid();
 
