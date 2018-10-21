@@ -57,6 +57,10 @@ class ConstraintPayloadDocHelper
      */
     public function getTypeIfExist(Constraint $constraint)
     {
+        if (!$this->hasPayloadDoc($constraint)) {
+            return null;
+        }
+
         return $this->getPayloadDocValue($constraint, self::PAYLOAD_DOCUMENTATION_TYPE_KEY);
     }
 

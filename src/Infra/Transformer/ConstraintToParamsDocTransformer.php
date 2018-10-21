@@ -46,24 +46,10 @@ class ConstraintToParamsDocTransformer
      *
      * @return TypeDoc
      */
-    public function transform(Constraint $constraint)
-    {
-        return $this->docFromConstraint($constraint);
-    }
-
-    /**
-     * @param Constraint      $constraintOrConstraintList
-     * @param string|int|null $paramNameOrIndex
-     *
-     * @return TypeDoc
-     */
-    private function docFromConstraint(Constraint $constraint, $paramNameOrIndex = null)
+    public function transform(Constraint $constraint) : TypeDoc
     {
         $constraintList = [$constraint];
         $constraintDoc = $this->docTypeHelper->guess($constraintList);
-        if (null !== $paramNameOrIndex) {
-            $constraintDoc->setName($paramNameOrIndex);
-        }
 
         foreach ($constraintList as $constraint) {
             $this->appendToDoc($constraintDoc, $constraint);
@@ -76,7 +62,7 @@ class ConstraintToParamsDocTransformer
      * @param TypeDoc $doc
      * @param Constraint   $constraint
      */
-    private function appendToDoc(TypeDoc $doc, Constraint $constraint)
+    private function appendToDoc(TypeDoc $doc, Constraint $constraint) : void
     {
         if ($doc instanceof ArrayDoc && $constraint instanceof Assert\All) {
             $this->appendAllConstraintToDoc($doc, $constraint);
@@ -105,7 +91,7 @@ class ConstraintToParamsDocTransformer
      * @param TypeDoc $doc
      * @param Constraint $constraint
      */
-    private function appendCollectionDoc(TypeDoc $doc, Constraint $constraint)
+    private function appendCollectionDoc(TypeDoc $doc, Constraint $constraint) : void
     {
         // If not a collection => give up
         if (!$doc instanceof CollectionDoc) {
@@ -115,7 +101,8 @@ class ConstraintToParamsDocTransformer
         if ($constraint instanceof Assert\Collection) {
             foreach ($constraint->fields as $fieldName => $constraintOrConstrainList) {
                 $doc->addSibling(
-                    $this->docFromConstraint($constraintOrConstrainList, $fieldName)
+                    $this->transform($constraintOrConstrainList)
+                        ->setName($fieldName)
                 );
             }
 
@@ -128,7 +115,7 @@ class ConstraintToParamsDocTransformer
      * @param TypeDoc $doc
      * @param Constraint $constraint
      */
-    private function appendValidItemListDoc(TypeDoc $doc, Constraint $constraint)
+    private function appendValidItemListDoc(TypeDoc $doc, Constraint $constraint) : void
     {
         if ($constraint instanceof Assert\Choice) {
             if ($constraint->callback && is_callable($constraint->callback)) {
@@ -146,7 +133,7 @@ class ConstraintToParamsDocTransformer
      * @param ArrayDoc   $doc
      * @param Assert\All $constraint
      */
-    private function appendAllConstraintToDoc(ArrayDoc $doc, Assert\All $constraint)
+    private function appendAllConstraintToDoc(ArrayDoc $doc, Assert\All $constraint) : void
     {
         $itemDoc = $this->docTypeHelper->guess($constraint->constraints);
         foreach ($constraint->constraints as $subConstraint) {

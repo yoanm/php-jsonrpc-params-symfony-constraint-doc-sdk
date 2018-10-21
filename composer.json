@@ -1,6 +1,6 @@
 {
     "name": "yoanm/jsonrpc-params-symfony-constraint-doc-sdk",
-    "description": "Simple JSON-RPC params validator that use Symfony validator component",
+    "description": "SDK to generate JSON-RPC documentation from symfony constraint",
     "license": "MIT",
     "type": "library",
     "support": {
@@ -25,7 +25,7 @@
         }
     },
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.1",
         "yoanm/jsonrpc-server-doc-sdk": "dev-release/1.0.0",
         "symfony/validator": "^3.0 || ^4.0"
     },
