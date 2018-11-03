@@ -7,6 +7,7 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\BooleanDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\IntegerDoc;
+use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ScalarDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;
@@ -58,6 +59,18 @@ class DocTypeHelper
                 $doc = $this->normalizeType($typeFromPayload);
             } elseif ($constraint instanceof Assert\Type) {
                 $doc = $this->normalizeType(strtolower($constraint->type));
+            } elseif ($constraint instanceof Assert\Existence && count($constraint->constraints) > 0) {
+                $doc = $this->guess($constraint->constraints);
+            } elseif ($constraint instanceof Assert\IdenticalTo) {
+                // Strict comparison so value define the type
+                $doc = $this->normalizeType(gettype($constraint->value));
+            } elseif ($constraint instanceof Assert\Callback) {
+                $callbackResult = call_user_func($constraint->callback);
+                $doc = $this->guess(
+                    is_array($callbackResult)
+                        ? $callbackResult
+                        : [$callbackResult]
+                );
             }
 
             if (null !== $doc) {
@@ -83,8 +96,10 @@ class DocTypeHelper
             return new BooleanDoc();
         } elseif (in_array($type, ['int', 'integer'])) {
             return new IntegerDoc();
-        } elseif (in_array($type, ['float', 'long', 'double', 'real', 'numeric'])) {
+        } elseif (in_array($type, ['float', 'long', 'double', 'real'])) {
             return new FloatDoc();
+        } elseif ('numeric' === $type) {
+            return new NumberDoc();
         } elseif ('array' === $type) {
             return new ArrayDoc();
         } elseif ('object' === $type) {

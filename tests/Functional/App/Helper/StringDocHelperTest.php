@@ -2,7 +2,6 @@
 namespace Tests\Functional\Infra;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\StringDocHelper;
@@ -74,7 +73,7 @@ class StringDocHelperTest extends TestCase
             ],
             'date  formattime' => [
                 'constraintClass' => new Assert\DateTime(),
-                'expectedFormat' => 'dateTime'
+                'expectedFormat' => 'datetime'
             ],
             'email format' => [
                 'constraintClass' => new Assert\Email(),
@@ -113,8 +112,8 @@ class StringDocHelperTest extends TestCase
                 'expectedFormat' => 'luhn'
             ],
             'regex format' => [
-                'constraintClass' => new Assert\Regex('//'),
-                'expectedFormat' => 'regex'
+                'constraintClass' => new Assert\Regex('/.*/'),
+                'expectedFormat' => '/.*/'
             ],
             'time format' => [
                 'constraintClass' => new Assert\Time(),
@@ -127,6 +126,14 @@ class StringDocHelperTest extends TestCase
             'uuid format' => [
                 'constraintClass' => new Assert\Uuid(),
                 'expectedFormat' => 'uuid'
+            ],
+            'Range constraint (with string it must be date conparaison)' => [
+                'constraintClass' => new Assert\Range(['min' => '2018-10-10', 'max' => '2018-11-10']),
+                'expectedFormat' => 'datetime'
+            ],
+            'Expression constraint' => [
+                'constraintClass' => new Assert\Expression('strlen(this) == 2'),
+                'expectedFormat' => 'strlen(this) == 2'
             ],
         ];
     }

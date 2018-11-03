@@ -4,6 +4,7 @@ namespace Tests\Functional\Infra\Transformer;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\ConstraintPayloadDocHelper;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\DocTypeHelper;
@@ -119,6 +120,23 @@ class ConstraintToParamsDocTransformerTest extends TestCase
         $this->assertSame($subDoc, $doc->getItemValidation());
     }
 
+    public function testShouldHandleCallbackConstraint()
+    {
+        $constraint = new Assert\Callback(function () {
+            return new Assert\Type('string');
+        });
+        $doc = new StringDoc();
+
+        $this->docTypeHelper->guess([$constraint])
+            ->willReturn($doc)
+            ->shouldBeCalled()
+        ;
+
+        $newDoc = $this->transformer->transform($constraint);
+
+        $this->assertSame($doc, $newDoc);
+    }
+
     public function testShouldHandleCollectionConstraintAsArrayDoc()
     {
         $fieldsConstraintList = [0 => new Assert\Type('string'), 1 => new Assert\Type('integer')];
@@ -148,6 +166,34 @@ class ConstraintToParamsDocTransformerTest extends TestCase
         $this->assertSame(1, $subDoc2->getName());
         $this->assertTrue($doc->isAllowMissingSibling());
         $this->assertTrue($doc->isAllowExtraSibling());
+    }
+
+    public function testShouldHandleCollectionConstraintFieldAsArrayOfConstraints()
+    {
+        $fieldConstraintList = new Assert\Required([new Assert\Type('string'), new Assert\NotNull()]);
+        $fieldsConstraintList = ['a' => $fieldConstraintList];
+        $constraint = new Assert\Collection([
+            'fields' => $fieldsConstraintList,
+            'allowExtraFields' => true,
+            'allowMissingFields' => true,
+        ]);
+        $doc = new ArrayDoc();
+        $subDoc = new StringDoc();
+
+        $this->docTypeHelper->guess([$constraint])
+            ->willReturn($doc)
+            ->shouldBeCalled()
+        ;
+
+        $this->docTypeHelper->guess([$fieldConstraintList])
+            ->willReturn($subDoc)
+            ->shouldBeCalled()
+        ;
+
+        $newDoc = $this->transformer->transform($constraint);
+
+        $this->assertSame($doc, $newDoc);
+        $this->assertSame([$subDoc], $doc->getSiblingList());
     }
 
     public function testShouldHandleCollectionConstraintAsObjectDoc()
@@ -212,5 +258,108 @@ class ConstraintToParamsDocTransformerTest extends TestCase
         $this->assertSame($doc, $newDoc);
         // Check is still true even if constraint is NotNul
         $this->assertTrue($doc->isNullable());
+    }
+
+    /**
+     * @dataProvider provideNullableDefaultValueAndExampleConstraints
+     * @param Constraint $constraint
+     * @param bool       $isNullable
+     * @param            $defaultValue
+     * @param            $example
+     */
+    public function testShouldHandleNullableDefaultValueAndExampleWith(
+        Constraint $constraint,
+        bool $isNullable,
+        $defaultValue,
+        $example
+    ) {
+        $doc = new StringDoc();
+
+        $this->docTypeHelper->guess([$constraint])
+            ->willReturn($doc)
+            ->shouldBeCalled()
+        ;
+        $doc = $this->transformer->transform($constraint);
+
+        $this->assertSame($isNullable, $doc->isNullable());
+        $this->assertSame($defaultValue, $doc->getDefault());
+        $this->assertSame($example, $doc->getExample());
+    }
+
+    /**
+     * @dataProvider provideConstraintsWithAllowedValueList
+     *
+     * @param Constraint $constraint
+     * @param array      $allowedValueList
+     */
+    public function testShouldHandleAllowedValueListWith(
+        Constraint $constraint,
+        array $allowedValueList
+    ) {
+        $doc = new TypeDoc();
+
+        $this->docTypeHelper->guess([$constraint])
+            ->willReturn($doc)
+            ->shouldBeCalled()
+        ;
+        $doc = $this->transformer->transform($constraint);
+
+        $this->assertSame($allowedValueList, $doc->getAllowedValueList());
+    }
+
+    public function provideConstraintsWithAllowedValueList()
+    {
+        return [
+            'IsNull' => [
+                'constraint' => new Assert\IsNull(),
+                'allowedValueList' => [null]
+            ],
+            'IsTrue' => [
+                'constraint' => new Assert\IsTrue(),
+                'allowedValueList' => [true, 1, '1']
+            ],
+            'IsFalse' => [
+                'constraint' => new Assert\IsFalse(),
+                'allowedValueList' => [false, 0, '0']
+            ],
+            'IdenticalTo' => [
+                'constraint' => new Assert\IdenticalTo('2'),
+                'allowedValueList' => ['2']
+            ],
+            'EqualTo' => [
+                'constraint' => new Assert\EqualTo('2'),
+                'allowedValueList' => ['2']
+            ],
+        ];
+    }
+
+    public function provideNullableDefaultValueAndExampleConstraints()
+    {
+        return [
+            'NotNull' => [
+                'constraint' => new Assert\NotNull(),
+                'isNullable' => false,
+                'defaultValue' => null,
+                'example' => null,
+            ],
+            'IsTrue' => [
+                'constraint' => new Assert\IsTrue(),
+                'isNullable' => false,
+                'defaultValue' => true,
+                'example' => true,
+            ],
+            'IsFalse' => [
+                'constraint' => new Assert\IsFalse(),
+                'isNullable' => false,
+                'defaultValue' => false,
+                'example' => false,
+            ],
+            'IdenticalTo' => [
+                'constraint' => new Assert\IdenticalTo('2'),
+                'isNullable' => false,
+                'defaultValue' => '2',
+                'example' => '2',
+            ],
+        ];
     }
 }

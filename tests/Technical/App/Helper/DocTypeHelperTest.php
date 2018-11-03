@@ -2,7 +2,6 @@
 namespace Tests\Technical\App\Helper;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\ConstraintPayloadDocHelper;
@@ -63,13 +62,14 @@ class DocTypeHelperTest extends TestCase
     {
         $constraint = new Assert\Required();
         $constraint->payload = ['documentation' => []];
+        $constraintList = [$constraint];
 
-        $this->typeGuesser->guessTypeFromConstraintList([$constraint])
+        $this->typeGuesser->guessTypeFromConstraintList($constraintList)
             ->willReturn(new IntegerDoc())
             ->shouldBeCalled()
         ;
 
-        $this->assertInstanceOf(IntegerDoc::class, $this->helper->guess([$constraint]));
+        $this->assertInstanceOf(IntegerDoc::class, $this->helper->guess($constraintList));
     }
 
     public function testShouldReturnBasicTypeDocIfRealTypeNotEstablished()

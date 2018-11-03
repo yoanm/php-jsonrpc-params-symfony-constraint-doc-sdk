@@ -6,7 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\BooleanDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\CollectionDoc;
-use Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ScalarDoc;
@@ -58,21 +57,9 @@ class TypeGuesser
         }
 
         // If primary type is still not defined
-        static $numberOrFloatConstraintClassList = [
-            Assert\GreaterThan::class,
-            Assert\GreaterThanOrEqual::class,
-            Assert\LessThan::class,
-            Assert\LessThanOrEqual::class,
-        ];
         $constraintClass = get_class($constraint);
-        if ($constraint instanceof Assert\Range) {
-            return $this->floatOrNumberBaseOn([$constraint->min, $constraint->max]);
-        } elseif (in_array($constraintClass, $numberOrFloatConstraintClassList)) {
-            return $this->floatOrNumberBaseOn([$constraint->value]);
-        } elseif (Assert\Count::class == $constraintClass) {
+        if (Assert\Count::class == $constraintClass) {
             return new CollectionDoc();
-        } elseif ($constraint instanceof Assert\Existence) {
-            return $this->guessTypeFromConstraintList($constraint->constraints);
         }
 
         return null;
@@ -92,22 +79,6 @@ class TypeGuesser
             || NumberDoc::class === $class
             || ScalarDoc::class === $class
         ;
-    }
-
-    /**
-     * @param array $valueList
-     *
-     * @return FloatDoc|NumberDoc
-     */
-    private function floatOrNumberBaseOn(array $valueList)
-    {
-        foreach ($valueList as $value) {
-            if (null !== $value && is_float($value)) {
-                return new FloatDoc();
-            }
-        }
-
-        return new NumberDoc();
     }
 
     /**
@@ -134,7 +105,6 @@ class TypeGuesser
             Assert\Language::class,
             Assert\Locale::class,
             Assert\Luhn::class,
-            Assert\Regex::class,
             Assert\Url::class,
             Assert\Uuid::class,
         ];
@@ -142,17 +112,18 @@ class TypeGuesser
             Assert\IsTrue::class,
             Assert\IsFalse::class,
         ];
-        $constraintClass = get_class($constraint);
 
         // Try to guess primary types
-        if (in_array($constraintClass, $stringConstraintClassList)) {
+        if ($this->isInstanceOfOneClassIn($constraint, $stringConstraintClassList)) {
             return new StringDoc();
-        } elseif (in_array($constraintClass, $booleanConstraintClassList)) {
+        } elseif ($this->isInstanceOfOneClassIn($constraint, $booleanConstraintClassList)) {
             return new BooleanDoc();
         } elseif ($constraint instanceof Assert\DateTime) {
             return $this->guessDateTimeType($constraint);
         } elseif ($constraint instanceof Assert\Collection) {
             return $this->guestCollectionType($constraint);
+        } elseif ($constraint instanceof Assert\Regex) {
+            return new ScalarDoc();
         } elseif ($constraint instanceof Assert\All // << Applied only on array
             || ($constraint instanceof Assert\Choice
                 && true === $constraint->multiple // << expect an array multiple choices
@@ -192,5 +163,27 @@ class TypeGuesser
         }
 
         return new ObjectDoc();
+    }
+
+    /**
+     * @param       $object
+     * @param array $classList
+     *
+     * @return bool
+     */
+    private function isInstanceOfOneClassIn($object, array $classList) : bool
+    {
+        $actualClassList = array_merge(
+            [get_class($object)],
+            class_implements($object),
+            class_uses($object)
+        );
+        $parentClass = get_parent_class($object);
+        while (false !== $parentClass) {
+            $actualClassList[] = $parentClass;
+            $parentClass = get_parent_class($parentClass);
+        }
+
+        return count(array_intersect($actualClassList, $classList)) > 0;
     }
 }
