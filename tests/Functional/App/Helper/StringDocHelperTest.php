@@ -2,7 +2,6 @@
 namespace Tests\Functional\Infra;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\StringDocHelper;

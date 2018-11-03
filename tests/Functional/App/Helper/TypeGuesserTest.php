@@ -2,15 +2,12 @@
 namespace Tests\Functional\App\Helper;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\TypeGuesser;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\BooleanDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\CollectionDoc;
-use Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc;
-use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ScalarDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;

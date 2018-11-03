@@ -2,7 +2,6 @@
 namespace Tests\Functional\App\Helper\ConstraintPayloadDocHelper;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\ConstraintPayloadDocHelper;
 
