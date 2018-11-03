@@ -128,6 +128,14 @@ class StringDocHelperTest extends TestCase
                 'constraintClass' => new Assert\Uuid(),
                 'expectedFormat' => 'uuid'
             ],
+            'Range constraint (with string it must be date conparaison)' => [
+                'constraintClass' => new Assert\Range(['min' => '2018-10-10', 'max' => '2018-11-10']),
+                'expectedFormat' => 'datetime'
+            ],
+            'Expression constraint' => [
+                'constraintClass' => new Assert\Expression('strlen(this) == 2'),
+                'expectedFormat' => 'strlen(this) == 2'
+            ],
         ];
     }
 }

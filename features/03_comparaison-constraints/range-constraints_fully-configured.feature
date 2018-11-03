@@ -118,7 +118,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured Range constraint
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
-    And constraint doc "getFormat" should return the value "date"
+    And constraint doc "getFormat" should return the value "datetime"
     And constraint doc "getDescription" should return the value "description"
     And constraint doc "getDefault" should return the value "default"
     And constraint doc "getExample" should return the value "example"

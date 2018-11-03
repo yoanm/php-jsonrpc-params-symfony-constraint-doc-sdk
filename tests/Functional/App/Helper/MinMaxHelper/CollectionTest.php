@@ -44,19 +44,59 @@ class CollectionTest extends TestCase
     {
         return [
             'Count constraint' => [
-                'constraintClass' => new Assert\Count(['min' => 2, 'max' => 4]),
+                'constraint' => new Assert\Count(['min' => 2, 'max' => 4]),
                 'expectedMin' => 2,
                 'expectedMax' => 4,
             ],
             'Count constraint with only min' => [
-                'constraintClass' => new Assert\Count(['min' => 2]),
+                'constraint' => new Assert\Count(['min' => 2]),
                 'expectedMin' => 2,
                 'expectedMax' => null,
             ],
             'Count constraint with only max' => [
-                'constraintClass' => new Assert\Count(['max' => 4]),
+                'constraint' => new Assert\Count(['max' => 4]),
                 'expectedMin' => null,
                 'expectedMax' => 4,
+            ],
+            'Choice constraint' => [
+                'constraint' => new Assert\Choice(['choices' => [1, 2, 3, 4], 'multiple' => true, 'min' => 2, 'max' => 4]),
+                'expectedMin' => 2,
+                'expectedMax' => 4,
+            ],
+            'Choice constraint with only min' => [
+                'constraint' => new Assert\Choice(['choices' => [1, 2, 3, 4], 'multiple' => true, 'min' => 2]),
+                'expectedMin' => 2,
+                'expectedMax' => null,
+            ],
+            'Choice constraint with only max' => [
+                'constraint' => new Assert\Choice(['choices' => [1, 2, 3, 4], 'multiple' => true, 'max' => 4]),
+                'expectedMin' => null,
+                'expectedMax' => 4,
+            ],
+            'NotBlank constraint with array type' => [
+                'constraint' => new Assert\NotBlank(['payload' => ['documentation' => ['type' => 'array']]]),
+                'expectedMin' => 1,
+                'expectedMax' => null,
+            ],
+            'GreaterThan constraint with array type' => [
+                'constraint' => new Assert\GreaterThan(['value' => 2, 'payload' => ['documentation' => ['type' => 'array']]]),
+                'expectedMin' => 3,
+                'expectedMax' => null,
+            ],
+            'GreaterThanOrEqual constraint with array type' => [
+                'constraint' => new Assert\GreaterThanOrEqual(['value' => 2, 'payload' => ['documentation' => ['type' => 'array']]]),
+                'expectedMin' => 2,
+                'expectedMax' => null,
+            ],
+            'LessThan constraint with array type' => [
+                'constraint' => new Assert\LessThan(['value' => 3, 'payload' => ['documentation' => ['type' => 'array']]]),
+                'expectedMin' => null,
+                'expectedMax' => 2,
+            ],
+            'LessThanOrEqual constraint with array type' => [
+                'constraint' => new Assert\LessThanOrEqual(['value' => 3, 'payload' => ['documentation' => ['type' => 'array']]]),
+                'expectedMin' => null,
+                'expectedMax' => 3,
             ],
         ];
     }

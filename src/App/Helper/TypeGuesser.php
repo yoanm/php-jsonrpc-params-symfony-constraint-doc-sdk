@@ -6,7 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\BooleanDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\CollectionDoc;
-use Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ScalarDoc;
@@ -61,8 +60,6 @@ class TypeGuesser
         $constraintClass = get_class($constraint);
         if (Assert\Count::class == $constraintClass) {
             return new CollectionDoc();
-        } elseif ($constraint instanceof Assert\Existence) {
-            return $this->guessTypeFromConstraintList($constraint->constraints);
         }
 
         return null;

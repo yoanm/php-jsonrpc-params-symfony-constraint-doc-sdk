@@ -60,4 +60,22 @@ class StringTest extends TestCase
             ],
         ];
     }
+
+    public function testShouldSetMinLengthIfNotNullWithNotBlankConstraint()
+    {
+        $doc = new StringDoc();
+
+        $this->helper->append($doc, new Assert\NotBlank());
+
+        $this->assertSame(1, $doc->getMinLength());
+    }
+
+    public function testShouldSetMaxLengthIfNotNullWithBlankConstraint()
+    {
+        $doc = new StringDoc();
+
+        $this->helper->append($doc, new Assert\Blank());
+
+        $this->assertSame(0, $doc->getMaxLength());
+    }
 }

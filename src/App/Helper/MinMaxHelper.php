@@ -94,20 +94,18 @@ class MinMaxHelper
             // Blank so maximum 0 item
             $doc->setMaxItem(0);
         }*/
-        if ($doc instanceof ArrayDoc) {
-            if ($constraint instanceof Assert\GreaterThan || $constraint instanceof Assert\GreaterThanOrEqual) {
-                $doc->setMinItem(
-                    $constraint instanceof Assert\GreaterThanOrEqual
-                        ? $constraint->value
-                        : $constraint->value + 1
-                );
-            } elseif ($constraint instanceof Assert\LessThan || $constraint instanceof Assert\LessThanOrEqual) {
-                $doc->setMaxItem(
-                    $constraint instanceof Assert\LessThanOrEqual
-                        ? $constraint->value
-                        : $constraint->value - 1
-                );
-            }
+        if ($constraint instanceof Assert\GreaterThan || $constraint instanceof Assert\GreaterThanOrEqual) {
+            $doc->setMinItem(
+                $constraint instanceof Assert\GreaterThanOrEqual
+                    ? $constraint->value
+                    : $constraint->value + 1
+            );
+        } elseif ($constraint instanceof Assert\LessThan || $constraint instanceof Assert\LessThanOrEqual) {
+            $doc->setMaxItem(
+                $constraint instanceof Assert\LessThanOrEqual
+                    ? $constraint->value
+                    : $constraint->value - 1
+            );
         }
     }
 

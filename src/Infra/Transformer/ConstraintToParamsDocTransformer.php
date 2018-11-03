@@ -138,12 +138,8 @@ class ConstraintToParamsDocTransformer
         }
 
         if ($constraint instanceof Assert\Collection) {
-            foreach ($constraint->fields as $fieldName => $constraintOrConstrainList) {
-                if (is_array($constraintOrConstrainList)) {
-                    $sibling = $this->transformList($constraintOrConstrainList);
-                } else {
-                    $sibling = $this->transform($constraintOrConstrainList);
-                }
+            foreach ($constraint->fields as $fieldName => $subConstraint) {
+                $sibling = $this->transform($subConstraint);
                 $doc->addSibling(
                     $sibling->setName($fieldName)
                 );

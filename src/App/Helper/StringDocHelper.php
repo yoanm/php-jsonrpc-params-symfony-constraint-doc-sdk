@@ -79,7 +79,7 @@ class StringDocHelper
             $doc->setFormat($constraint->pattern);
         } elseif ($constraint instanceof Assert\Range) {
             // If it's a string range it must be a date range check (either it must be an integer or float value)
-            $doc->setFormat('date');
+            $doc->setFormat('datetime');
         } elseif ($constraint instanceof Assert\Expression) {
             // If it's a string range it must be a date range check (either it must be an integer or float value)
             $doc->setFormat($constraint->expression);
