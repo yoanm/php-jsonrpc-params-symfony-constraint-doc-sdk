@@ -13,6 +13,7 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\BooleanDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\IntegerDoc;
+use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ScalarDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;
@@ -194,9 +195,9 @@ class DocTypeHelperTest extends TestCase
                 'typeAlias' => 'real',
                 'expectedClass' => FloatDoc::class
             ],
-            'numeric to float' => [
+            'numeric to number' => [
                 'typeAlias' => 'numeric',
-                'expectedClass' => FloatDoc::class
+                'expectedClass' => NumberDoc::class
             ],
         ];
     }

@@ -7,6 +7,7 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\BooleanDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\IntegerDoc;
+use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ScalarDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;
@@ -95,8 +96,10 @@ class DocTypeHelper
             return new BooleanDoc();
         } elseif (in_array($type, ['int', 'integer'])) {
             return new IntegerDoc();
-        } elseif (in_array($type, ['float', 'long', 'double', 'real', 'numeric'])) {
+        } elseif (in_array($type, ['float', 'long', 'double', 'real'])) {
             return new FloatDoc();
+        } elseif ('numeric' === $type) {
+            return new NumberDoc();
         } elseif ('array' === $type) {
             return new ArrayDoc();
         } elseif ('object' === $type) {

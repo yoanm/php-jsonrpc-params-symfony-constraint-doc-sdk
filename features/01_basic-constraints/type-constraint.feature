@@ -141,7 +141,7 @@ Feature: ConstraintToParamsDocTransformer - Type constraint
     return new Symfony\Component\Validator\Constraints\Type('numeric');
     """
     When I transform constraint
-    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc"
+    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc"
     ## Check others properties
     And constraint doc "getName" should return null
     And constraint doc "getDescription" should return null

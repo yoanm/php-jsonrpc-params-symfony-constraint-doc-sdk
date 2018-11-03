@@ -1,5 +1,21 @@
 Feature: ConstraintToParamsDocTransformer - NotBlank & Blank constraints
 
+  Scenario: Simple NotBlank constraint
+    Given I have the following Constraint:
+    """
+    use Symfony\Component\Validator\Constraints as ConstraintNS;
+    return new ConstraintNS\NotBlank();
+    """
+    When I transform constraint
+    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc"
+    ## Check others properties
+    And constraint doc "getName" should return null
+    And constraint doc "getDescription" should return null
+    And constraint doc "getDefault" should return null
+    And constraint doc "getExample" should return null
+    And constraint doc "isRequired" should return false
+    And constraint doc "isNullable" should return true
+
   Scenario: Simple NotBlank constraint with string type specified
     Given I have the following Constraint:
     """

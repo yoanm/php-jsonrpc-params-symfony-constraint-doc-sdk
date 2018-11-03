@@ -229,7 +229,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured Type constraint
     ]);
     """
     When I transform constraint
-    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc"
+    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc"
     And constraint doc "getDescription" should return the value "desc"
     And constraint doc "getDefault" should return the number 3.2
     And constraint doc "getExample" should return the number 4.5
