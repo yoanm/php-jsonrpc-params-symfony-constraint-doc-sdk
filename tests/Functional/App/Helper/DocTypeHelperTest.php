@@ -157,11 +157,15 @@ class DocTypeHelperTest extends TestCase
                 'expectedClass' => StringDoc::class,
             ],
             'From callback' => [
-                'constraint' => new Assert\Callback(function () { return new Assert\Type('string');}),
+                'constraint' => new Assert\Callback(function () {
+                    return new Assert\Type('string');
+                }),
                 'expectedClass' => StringDoc::class,
             ],
             'From callback array result' => [
-                'constraint' => new Assert\Callback(function () { return [new Assert\Type('string')];}),
+                'constraint' => new Assert\Callback(function () {
+                    return [new Assert\Type('string')];
+                }),
                 'expectedClass' => StringDoc::class,
             ]
         ];
