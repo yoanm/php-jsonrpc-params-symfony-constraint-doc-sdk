@@ -78,7 +78,6 @@ class ConstraintTransformerContext extends AbstractContext
     }
 
     /**
-     * @Then constraint doc should have a sibling :siblingName
      * @Then constraint doc should have a sibling :siblingName of class :class
      */
     public function thenConstraintDocShouldHaveASiblingName($siblingName, $class = null)
@@ -209,6 +208,12 @@ class ConstraintTransformerContext extends AbstractContext
         $this->assertMethodCallResult($this->lastDocumenation, $methodName, []);
     }
 
+    /**
+     * @param string $siblingName
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     private function findSiblingNamed($siblingName)
     {
         Assert::assertInstanceOf(CollectionDoc::class, $this->lastDocumenation);
