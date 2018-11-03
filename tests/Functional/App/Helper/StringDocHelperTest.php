@@ -74,7 +74,7 @@ class StringDocHelperTest extends TestCase
             ],
             'date  formattime' => [
                 'constraintClass' => new Assert\DateTime(),
-                'expectedFormat' => 'dateTime'
+                'expectedFormat' => 'datetime'
             ],
             'email format' => [
                 'constraintClass' => new Assert\Email(),
@@ -113,8 +113,8 @@ class StringDocHelperTest extends TestCase
                 'expectedFormat' => 'luhn'
             ],
             'regex format' => [
-                'constraintClass' => new Assert\Regex('//'),
-                'expectedFormat' => 'regex'
+                'constraintClass' => new Assert\Regex('/.*/'),
+                'expectedFormat' => '/.*/'
             ],
             'time format' => [
                 'constraintClass' => new Assert\Time(),

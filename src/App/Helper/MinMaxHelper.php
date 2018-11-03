@@ -3,6 +3,7 @@ namespace Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
+use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\CollectionDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;
@@ -41,6 +42,12 @@ class MinMaxHelper
             if (null !== $constraint->max) {
                 $doc->setMaxLength($constraint->max);
             }
+        } elseif ($constraint instanceof Assert\NotBlank && null === $doc->getMinLength()) {
+            // Not blank so minimum 1 character
+            $doc->setMinLength(1);
+        } elseif ($constraint instanceof Assert\Blank && null === $doc->getMaxLength()) {
+            // Blank so maximum 0 character
+            $doc->setMaxLength(0);
         }
     }
 
@@ -65,12 +72,41 @@ class MinMaxHelper
      */
     private function appendCollectionDoc(CollectionDoc $doc, Constraint $constraint)
     {
-        if ($constraint instanceof Assert\Count) {
+        if ($constraint instanceof Assert\Choice) {
             if (null !== $constraint->min) {
                 $doc->setMinItem($constraint->min);
             }
             if (null !== $constraint->max) {
                 $doc->setMaxItem($constraint->max);
+            }
+        } elseif ($constraint instanceof Assert\Count) {
+            if (null !== $constraint->min) {
+                $doc->setMinItem($constraint->min);
+            }
+            if (null !== $constraint->max) {
+                $doc->setMaxItem($constraint->max);
+            }
+        } elseif ($constraint instanceof Assert\NotBlank && null === $doc->getMinItem()) {
+            // Not blank so minimum 1 item
+            $doc->setMinItem(1);
+        }/* // Documentation does not mention array, counter to NotBlank constraint
+         elseif ($constraint instanceof Assert\Blank && null === $doc->getMaxItem()) {
+            // Blank so maximum 0 item
+            $doc->setMaxItem(0);
+        }*/
+        if ($doc instanceof ArrayDoc) {
+            if ($constraint instanceof Assert\GreaterThan || $constraint instanceof Assert\GreaterThanOrEqual) {
+                $doc->setMinItem(
+                    $constraint instanceof Assert\GreaterThanOrEqual
+                        ? $constraint->value
+                        : $constraint->value + 1
+                );
+            } elseif ($constraint instanceof Assert\LessThan || $constraint instanceof Assert\LessThanOrEqual) {
+                $doc->setMaxItem(
+                    $constraint instanceof Assert\LessThanOrEqual
+                        ? $constraint->value
+                        : $constraint->value - 1
+                );
             }
         }
     }

@@ -72,6 +72,25 @@ class DocTypeHelperTest extends TestCase
         );
     }
 
+
+
+    /**
+     * @dataProvider provideExistenceConstraints
+     *
+     * @param Assert\Existence $existenceConstraint
+     * @param string           $expectedClass
+     *
+     * @group yo
+     */
+    public function testShouldHandleTypeInsideExistenceType(Assert\Existence $existenceConstraint, $expectedClass)
+    {
+        // use get_class to avoid inheritance issue
+        $this->assertSame(
+            $expectedClass,
+            get_class($this->helper->guess([$existenceConstraint]))
+        );
+    }
+
     public function provideTypes()
     {
         return [
@@ -131,6 +150,21 @@ class DocTypeHelperTest extends TestCase
             ],
             'numeric to float' => [
                 'typeAlias' => 'numeric',
+                'expectedClass' => FloatDoc::class
+            ],
+        ];
+    }
+
+
+    public function provideExistenceConstraints()
+    {
+        return [
+            'required' => [
+                'existenceConstraint' => new Assert\Required(new Assert\Type('float')),
+                'expectedClass' => FloatDoc::class
+            ],
+            'optional' => [
+                'existenceConstraint' => new Assert\Optional(new Assert\Type('float')),
                 'expectedClass' => FloatDoc::class
             ],
         ];

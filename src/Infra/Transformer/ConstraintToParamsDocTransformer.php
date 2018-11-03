@@ -48,7 +48,16 @@ class ConstraintToParamsDocTransformer
      */
     public function transform(Constraint $constraint) : TypeDoc
     {
-        $constraintList = [$constraint];
+        return $this->transformList([$constraint]);
+    }
+
+    /**
+     * @param Constraint[] $constraintList
+     *
+     * @return TypeDoc
+     */
+    public function transformList(array $constraintList) : TypeDoc
+    {
         $constraintDoc = $this->docTypeHelper->guess($constraintList);
 
         foreach ($constraintList as $constraint) {
@@ -64,7 +73,20 @@ class ConstraintToParamsDocTransformer
      */
     private function appendToDoc(TypeDoc $doc, Constraint $constraint) : void
     {
-        if ($doc instanceof ArrayDoc && $constraint instanceof Assert\All) {
+        static $notNullConstraintList = [
+            Assert\NotNull::class,
+            Assert\IsTrue::class, // If it is true, it cannot be null ...
+            Assert\IsFalse::class, // If it is false, it cannot be null ...
+            // If should be identical to something, it cannot be null (but can be identical to null)
+            Assert\IdenticalTo::class,
+        ];
+        if ($constraint instanceof Assert\Callback) {
+            $callbackResult = call_user_func($constraint->callback);
+            $callbackResultList = is_array($callbackResult) ? $callbackResult : [$callbackResult];
+            foreach ($callbackResultList as $subConstraint) {
+                $this->appendToDoc($doc, $subConstraint);
+            }
+        } elseif ($doc instanceof ArrayDoc && $constraint instanceof Assert\All) {
             $this->appendAllConstraintToDoc($doc, $constraint);
         } else {
             $this->stringDocHelper->append($doc, $constraint);
@@ -78,13 +100,30 @@ class ConstraintToParamsDocTransformer
                 foreach ($constraint->constraints as $subConstraint) {
                     $this->appendToDoc($doc, $subConstraint);
                 }
-            } elseif ($constraint instanceof Assert\NotNull) {
-                $doc->setNullable(false);
+            } elseif ($this->isInstanceOfOneClassIn($constraint, $notNullConstraintList)) {
+                $doc->setNullable(
+                    ($constraint instanceof Assert\IdenticalTo)
+                        ? is_null($constraint->value)
+                        : false
+                );
+                $defaultValue = $exampleValue = null;
+                switch (true) {
+                    case $constraint instanceof Assert\IsTrue:
+                        $defaultValue = $exampleValue = true;
+                        break;
+                    case $constraint instanceof Assert\IsFalse:
+                        $defaultValue = $exampleValue = false;
+                        break;
+                    case $constraint instanceof Assert\IdenticalTo:
+                        $defaultValue = $exampleValue = $constraint->value;
+                        break;
+                }
+                $doc->setDefault($doc->getDefault() ?? $defaultValue);
+                $doc->setExample($doc->getExample() ?? $exampleValue);
             }
-
-            // /!\ Payload doc will override values even if already defined
-            $this->constraintPayloadDocHelper->appendPayloadDoc($doc, $constraint);
         }
+        // /!\ Payload doc will override values even if already defined
+        $this->constraintPayloadDocHelper->appendPayloadDoc($doc, $constraint);
     }
 
     /**
@@ -100,9 +139,13 @@ class ConstraintToParamsDocTransformer
 
         if ($constraint instanceof Assert\Collection) {
             foreach ($constraint->fields as $fieldName => $constraintOrConstrainList) {
+                if (is_array($constraintOrConstrainList)) {
+                    $sibling = $this->transformList($constraintOrConstrainList);
+                } else {
+                    $sibling = $this->transform($constraintOrConstrainList);
+                }
                 $doc->addSibling(
-                    $this->transform($constraintOrConstrainList)
-                        ->setName($fieldName)
+                    $sibling->setName($fieldName)
                 );
             }
 
@@ -123,9 +166,23 @@ class ConstraintToParamsDocTransformer
             } else {
                 $choiceList = $constraint->choices ?? [];
             }
-            foreach ($choiceList as $fieldName => $choice) {
-                $doc->addAllowedValue($choice);
+            foreach ($choiceList as $choice) {
+                $this->addToAllowedValueListIfNotExist($doc, $choice);
             }
+        } elseif ($constraint instanceof Assert\IsNull) {
+            $this->addToAllowedValueListIfNotExist($doc, null);
+        } elseif ($constraint instanceof Assert\IdenticalTo) {
+            $this->addToAllowedValueListIfNotExist($doc, $constraint->value);
+        } elseif ($constraint instanceof Assert\IsTrue) {
+            $this->addToAllowedValueListIfNotExist($doc, true);
+            $this->addToAllowedValueListIfNotExist($doc, 1);
+            $this->addToAllowedValueListIfNotExist($doc, '1');
+        } elseif ($constraint instanceof Assert\IsFalse) {
+            $this->addToAllowedValueListIfNotExist($doc, false);
+            $this->addToAllowedValueListIfNotExist($doc, 0);
+            $this->addToAllowedValueListIfNotExist($doc, '0');
+        } elseif ($constraint instanceof Assert\EqualTo) {
+            $this->addToAllowedValueListIfNotExist($doc, $constraint->value);
         }
     }
 
@@ -141,5 +198,34 @@ class ConstraintToParamsDocTransformer
         }
 
         $doc->setItemValidation($itemDoc);
+    }
+
+    /**
+     * @param       $object
+     * @param array $classList
+     *
+     * @return bool
+     */
+    private function isInstanceOfOneClassIn($object, array $classList) : bool
+    {
+        $actualClassList = array_merge(
+            [get_class($object)],
+            class_implements($object),
+            class_uses($object)
+        );
+        $parentClass = get_parent_class($object);
+        while (false !== $parentClass) {
+            $actualClassList[] = $parentClass;
+            $parentClass = get_parent_class($parentClass);
+        }
+
+        return count(array_intersect($actualClassList, $classList)) > 0;
+    }
+
+    private function addToAllowedValueListIfNotExist(TypeDoc $doc, $value)
+    {
+        if (!in_array($value, $doc->getAllowedValueList(), true)) {
+            $doc->addAllowedValue($value);
+        }
     }
 }

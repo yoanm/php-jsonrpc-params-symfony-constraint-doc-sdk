@@ -58,6 +58,18 @@ class DocTypeHelper
                 $doc = $this->normalizeType($typeFromPayload);
             } elseif ($constraint instanceof Assert\Type) {
                 $doc = $this->normalizeType(strtolower($constraint->type));
+            } elseif ($constraint instanceof Assert\Existence && count($constraint->constraints) > 0) {
+                $doc = $this->guess($constraint->constraints);
+            } elseif ($constraint instanceof Assert\IdenticalTo) {
+                // Strict comparison so value define the type
+                $doc = $this->normalizeType(gettype($constraint->value));
+            } elseif ($constraint instanceof Assert\Callback) {
+                $callbackResult = call_user_func($constraint->callback);
+                $doc = $this->guess(
+                    is_array($callbackResult)
+                        ? $callbackResult
+                        : [$callbackResult]
+                );
             }
 
             if (null !== $doc) {

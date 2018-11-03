@@ -45,21 +45,6 @@ class TypeGuesserTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider provideExistenceConstraints
-     *
-     * @param Assert\Existence $existenceConstraint
-     * @param string           $expectedClass
-     */
-    public function testShouldHandleTypeInsideExistenceType(Assert\Existence $existenceConstraint, $expectedClass)
-    {
-        // use get_class to avoid inheritance issue
-        $this->assertSame(
-            $expectedClass,
-            get_class($this->guesser->guessTypeFromConstraintList([$existenceConstraint]))
-        );
-    }
-
     public function provideConstraints()
     {
         return [
@@ -129,7 +114,7 @@ class TypeGuesserTest extends TestCase
             ],
             'Regex to String' => [
                 'constraint' => new Assert\Regex('/.{2}/'),
-                'expectedClass' => StringDoc::class,
+                'expectedClass' => ScalarDoc::class,
             ],
             'Url to String' => [
                 'constraint' => new Assert\Url(),
@@ -171,75 +156,9 @@ class TypeGuesserTest extends TestCase
                 'constraint' => new Assert\All(['constraints' => []]),
                 'expectedClass' => ArrayDoc::class,
             ],
-            'Range with float min to Float' => [
-                'constraint' => new Assert\Range(['min' => 1.2]),
-                'expectedClass' => FloatDoc::class,
-            ],
-            'Range with integer max to Float' => [
-                'constraint' => new Assert\Range(['max' => 4.3]),
-                'expectedClass' => FloatDoc::class,
-            ],
-            'Range with float min and integer max to Float' => [
-                'constraint' => new Assert\Range(['min' => 1.2, 'max' => 4]),
-                'expectedClass' => FloatDoc::class,
-            ],
-            'Range with integer min and float max to Float' => [
-                'constraint' => new Assert\Range(['min' => 1, 'max' => 4.3]),
-                'expectedClass' => FloatDoc::class,
-            ],
-            'Range to Number' => [
-                'constraint' => new Assert\Range(['min' => 1]),
-                'expectedClass' => NumberDoc::class,
-            ],
-            'GreaterThan to Float' => [
-                'constraint' => new Assert\GreaterThan(1.3),
-                'expectedClass' => FloatDoc::class,
-            ],
-            'GreaterThanOrEqual to Float' => [
-                'constraint' => new Assert\GreaterThanOrEqual(1.3),
-                'expectedClass' => FloatDoc::class,
-            ],
-            'LessThan to Float' => [
-                'constraint' => new Assert\LessThan(1.3),
-                'expectedClass' => FloatDoc::class,
-            ],
-            'LessThanOrEqual to Float' => [
-                'constraint' => new Assert\LessThanOrEqual(1.3),
-                'expectedClass' => FloatDoc::class,
-            ],
-            'GreaterThan to Number' => [
-                'constraint' => new Assert\GreaterThan(1),
-                'expectedClass' => NumberDoc::class,
-            ],
-            'GreaterThanOrEqual to Number' => [
-                'constraint' => new Assert\GreaterThanOrEqual(1),
-                'expectedClass' => NumberDoc::class,
-            ],
-            'LessThan to Number' => [
-                'constraint' => new Assert\LessThan(2),
-                'expectedClass' => NumberDoc::class,
-            ],
-            'LessThanOrEqual to Number' => [
-                'constraint' => new Assert\LessThanOrEqual(2),
-                'expectedClass' => NumberDoc::class,
-            ],
             'Count to Collection' => [
                 'constraint' => new Assert\Count(['min' => 2]),
                 'expectedClass' => CollectionDoc::class,
-            ],
-        ];
-    }
-
-    public function provideExistenceConstraints()
-    {
-        return [
-            'required' => [
-                'existenceConstraint' => new Assert\Required(new Assert\GreaterThan(1.2)),
-                'expectedClass' => FloatDoc::class
-            ],
-            'optional' => [
-                'existenceConstraint' => new Assert\Optional(new Assert\GreaterThan(1.2)),
-                'expectedClass' => FloatDoc::class
             ],
         ];
     }

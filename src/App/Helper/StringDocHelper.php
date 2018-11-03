@@ -39,14 +39,50 @@ class StringDocHelper
             Assert\Language::class,
             Assert\Locale::class,
             Assert\Luhn::class,
-            Assert\Regex::class,
             Assert\Time::class,
             Assert\Url::class,
             Assert\Uuid::class,
         ];
 
         if (in_array($constraintClass, $constraintForFormatList)) {
-            $doc->setFormat(lcfirst((new \ReflectionClass($constraint))->getShortName()));
+            if (Assert\DateTime::class === $constraintClass) {
+                $format = 'datetime';
+            } else {
+                $format = lcfirst((new \ReflectionClass($constraint))->getShortName());
+            }
+            $doc->setFormat($format);
+
+            if ($constraint instanceof Assert\Uuid) {
+                $formatDescription = sprintf(
+                    '%s (%s)',
+                    ucfirst($format),
+                    implode(
+                        ', ',
+                        array_map(
+                            function ($version) {
+                                return sprintf('v%s', $version);
+                            },
+                            $constraint->versions
+                        )
+                    )
+                );
+                $doc->setDescription(
+                    sprintf(
+                        '%s%s%s',
+                        $doc->getDescription(),
+                        strlen($doc->getDescription()) ? ' ' : '',
+                        $formatDescription
+                    )
+                );
+            }
+        } elseif ($constraint instanceof Assert\Regex) {
+            $doc->setFormat($constraint->pattern);
+        } elseif ($constraint instanceof Assert\Range) {
+            // If it's a string range it must be a date range check (either it must be an integer or float value)
+            $doc->setFormat('date');
+        } elseif ($constraint instanceof Assert\Expression) {
+            // If it's a string range it must be a date range check (either it must be an integer or float value)
+            $doc->setFormat($constraint->expression);
         }
     }
 }
