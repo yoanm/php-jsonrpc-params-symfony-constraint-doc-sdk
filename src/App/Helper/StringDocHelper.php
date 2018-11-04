@@ -12,8 +12,10 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
 class StringDocHelper
 {
     /**
-     * @param TypeDoc $doc
+     * @param TypeDoc    $doc
      * @param Constraint $constraint
+     *
+     * @throws \ReflectionException
      */
     public function append(TypeDoc $doc, Constraint $constraint)
     {

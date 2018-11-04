@@ -25,6 +25,7 @@ class DocTypeHelper
 
     /**
      * @param ConstraintPayloadDocHelper $constraintPayloadDocHelper
+     * @param TypeGuesser                $typeGuesser
      */
     public function __construct(ConstraintPayloadDocHelper $constraintPayloadDocHelper, TypeGuesser $typeGuesser)
     {

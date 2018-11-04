@@ -28,9 +28,7 @@ class StringDocHelperTest extends TestCase
     {
         $doc = new TypeDoc();
 
-        $this->assertNull(
-            $this->helper->append($doc, $this->prophesize(Assert\Date::class)->reveal())
-        );
+        $this->helper->append($doc, $this->prophesize(Assert\Date::class)->reveal());
     }
 
     /**
