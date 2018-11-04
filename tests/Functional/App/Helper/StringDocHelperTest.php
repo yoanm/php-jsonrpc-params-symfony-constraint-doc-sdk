@@ -27,10 +27,12 @@ class StringDocHelperTest extends TestCase
     public function testShouldDoNothingIfNotAStringDoc()
     {
         $doc = new TypeDoc();
+        $constraint = $this->prophesize(Assert\Date::class);
 
-        $this->assertNull(
-            $this->helper->append($doc, $this->prophesize(Assert\Date::class)->reveal())
-        );
+        $this->helper->append($doc, $constraint->reveal());
+
+        // there only to avoid "This test did not perform any assertions" issue
+        $this->assertNull(null);
     }
 
     /**

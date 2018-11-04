@@ -27,6 +27,8 @@ class ConstraintToParamsDocTransformer
 
     /**
      * @param DocTypeHelper              $docTypeHelper
+     * @param StringDocHelper            $stringDocHelper
+     * @param MinMaxHelper               $minMaxHelper
      * @param ConstraintPayloadDocHelper $constraintPayloadDocHelper
      */
     public function __construct(
@@ -45,6 +47,8 @@ class ConstraintToParamsDocTransformer
      * @param Constraint $constraint
      *
      * @return TypeDoc
+     *
+     * @throws \ReflectionException
      */
     public function transform(Constraint $constraint) : TypeDoc
     {
@@ -55,6 +59,8 @@ class ConstraintToParamsDocTransformer
      * @param Constraint[] $constraintList
      *
      * @return TypeDoc
+     *
+     * @throws \ReflectionException
      */
     public function transformList(array $constraintList) : TypeDoc
     {
@@ -68,8 +74,10 @@ class ConstraintToParamsDocTransformer
     }
 
     /**
-     * @param TypeDoc $doc
-     * @param Constraint   $constraint
+     * @param TypeDoc    $doc
+     * @param Constraint $constraint
+     *
+     * @throws \ReflectionException
      */
     private function appendToDoc(TypeDoc $doc, Constraint $constraint) : void
     {
@@ -127,8 +135,10 @@ class ConstraintToParamsDocTransformer
     }
 
     /**
-     * @param TypeDoc $doc
+     * @param TypeDoc    $doc
      * @param Constraint $constraint
+     *
+     * @throws \ReflectionException
      */
     private function appendCollectionDoc(TypeDoc $doc, Constraint $constraint) : void
     {
@@ -185,6 +195,8 @@ class ConstraintToParamsDocTransformer
     /**
      * @param ArrayDoc   $doc
      * @param Assert\All $constraint
+     *
+     * @throws \ReflectionException
      */
     private function appendAllConstraintToDoc(ArrayDoc $doc, Assert\All $constraint) : void
     {
