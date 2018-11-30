@@ -73,17 +73,17 @@ class MinMaxHelper
     {
         if ($constraint instanceof Assert\Choice) {
             if (null !== $constraint->min) {
-                $doc->setMinItem($constraint->min);
+                $doc->setMinItem((int) $constraint->min);
             }
             if (null !== $constraint->max) {
-                $doc->setMaxItem($constraint->max);
+                $doc->setMaxItem((int) $constraint->max);
             }
         } elseif ($constraint instanceof Assert\Count) {
             if (null !== $constraint->min) {
-                $doc->setMinItem($constraint->min);
+                $doc->setMinItem((int) $constraint->min);
             }
             if (null !== $constraint->max) {
-                $doc->setMaxItem($constraint->max);
+                $doc->setMaxItem((int) $constraint->max);
             }
         } elseif ($constraint instanceof Assert\NotBlank && null === $doc->getMinItem()) {
             // Not blank so minimum 1 item
