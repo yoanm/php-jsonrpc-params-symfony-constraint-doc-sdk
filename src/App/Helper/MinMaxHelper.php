@@ -36,10 +36,10 @@ class MinMaxHelper
     {
         if ($constraint instanceof Assert\Length) {
             if (null !== $constraint->min) {
-                $doc->setMinLength($constraint->min);
+                $doc->setMinLength((int) $constraint->min);
             }
             if (null !== $constraint->max) {
-                $doc->setMaxLength($constraint->max);
+                $doc->setMaxLength((int) $constraint->max);
             }
         } elseif ($constraint instanceof Assert\NotBlank && null === $doc->getMinLength()) {
             // Not blank so minimum 1 character
@@ -73,17 +73,17 @@ class MinMaxHelper
     {
         if ($constraint instanceof Assert\Choice) {
             if (null !== $constraint->min) {
-                $doc->setMinItem($constraint->min);
+                $doc->setMinItem((int) $constraint->min);
             }
             if (null !== $constraint->max) {
-                $doc->setMaxItem($constraint->max);
+                $doc->setMaxItem((int) $constraint->max);
             }
         } elseif ($constraint instanceof Assert\Count) {
             if (null !== $constraint->min) {
-                $doc->setMinItem($constraint->min);
+                $doc->setMinItem((int) $constraint->min);
             }
             if (null !== $constraint->max) {
-                $doc->setMaxItem($constraint->max);
+                $doc->setMaxItem((int) $constraint->max);
             }
         } elseif ($constraint instanceof Assert\NotBlank && null === $doc->getMinItem()) {
             // Not blank so minimum 1 item
