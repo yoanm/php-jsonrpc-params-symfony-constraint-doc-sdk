@@ -15,6 +15,13 @@ See [yoanm/symfony-jsonrpc-params-sf-constraints-doc](https://github.com/yoanm/s
 
 Create the transformer : 
 ```php
+use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\ConstraintPayloadDocHelper;
+use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\DocTypeHelper;
+use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\MinMaxHelper;
+use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\StringDocHelper;
+use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\TypeGuesser;
+use Yoanm\JsonRpcParamsSymfonyConstraintDoc\Infra\Transformer\ConstraintToParamsDocTransformer;
+
 $constraintPayloadDocHelper = new ConstraintPayloadDocHelper();
 
 $transformer = new ConstraintToParamsDocTransformer(
