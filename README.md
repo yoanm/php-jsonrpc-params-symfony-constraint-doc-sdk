@@ -9,8 +9,46 @@
 
 PHP SDK to generate JSON-RPC documentation from symfony constraint
 
+See [yoanm/symfony-jsonrpc-params-sf-constraints-doc](https://github.com/yoanm/symfony-jsonrpc-params-sf-constraints-doc) for automatic dependency injection.
+
 ## How to use
 
+Create the transformer : 
+```php
+$constraintPayloadDocHelper = new ConstraintPayloadDocHelper();
+
+$transformer = new ConstraintToParamsDocTransformer(
+  new DocTypeHelper(
+    $constraintPayloadDocHelper,
+    new TypeGuesser()
+  ),
+  new StringDocHelper(),
+  new MinMaxHelper(),
+  $constraintPayloadDocHelper
+);
+```
+
+Then use it with single constraint or a list of : 
+```php
+use Symfony\Component\Validator\Constraints as ConstraintNS;
+use Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc;
+use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;
+
+$constraint = new ConstraintNS\Collection([
+  'a' => new ConstraintNS\Type('string'),
+  'b' => new ConstraintNS\Type('integer'),
+  'c' => new ConstraintNS\Type('bool')
+]);
+
+/** @var ObjectDoc $constraintDoc */
+$constraintDoc = $transformer->transform($constraint);
+
+/** @var StringDoc $constraintDoc2 */
+$constraintDoc2 = $transformer->transformList([
+  new ConstraintNS\Type('string'),
+  new ConstraintNS\NotNull()
+]);
+```
 
 ## Contributing
 See [contributing note](./CONTRIBUTING.md)
