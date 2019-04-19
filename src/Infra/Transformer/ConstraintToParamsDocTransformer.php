@@ -230,7 +230,7 @@ class ConstraintToParamsDocTransformer
         return count(array_intersect($actualClassList, $classList)) > 0;
     }
 
-    private function addToAllowedValueListIfNotExist(TypeDoc $doc, $value)
+    private function addToAllowedValueListIfNotExist(TypeDoc $doc, $value) : void
     {
         if (!in_array($value, $doc->getAllowedValueList(), true)) {
             $doc->addAllowedValue($value);

@@ -22,7 +22,7 @@ class ConstraintPayloadDocHelper
      * @param TypeDoc $doc
      * @param Constraint $constraint
      */
-    public function appendPayloadDoc(TypeDoc $doc, Constraint $constraint)
+    public function appendPayloadDoc(TypeDoc $doc, Constraint $constraint) : void
     {
         if (!$this->hasPayloadDoc($constraint)) {
             return;
