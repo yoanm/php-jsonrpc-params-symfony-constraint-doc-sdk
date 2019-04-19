@@ -124,20 +124,4 @@ class MinMaxHelper
             $doc->setMin($constraint->value);
         }
     }
-
-    /**
-     * @param array  $docArray
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return array
-     */
-    private function appendIfNotNull(array $docArray, string $key, $value) : array
-    {
-        if (null !== $value) {
-            $docArray[$key] = $value;
-        }
-
-        return $docArray;
-    }
 }
