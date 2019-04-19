@@ -52,7 +52,8 @@ class TypeGuesser
      */
     protected function guessTypeFromConstraint(Constraint $constraint) : ?TypeDoc
     {
-        if (null !== ($type = $this->guessPrimaryTypeFromConstraint($constraint))) {
+        $type = $this->guessPrimaryTypeFromConstraint($constraint);
+        if (null !== $type) {
             return $type;
         }
 
