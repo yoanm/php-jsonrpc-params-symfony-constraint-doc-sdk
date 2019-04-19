@@ -71,14 +71,7 @@ class MinMaxHelper
      */
     private function appendCollectionDoc(CollectionDoc $doc, Constraint $constraint) : void
     {
-        if ($constraint instanceof Assert\Choice) {
-            if (null !== $constraint->min) {
-                $doc->setMinItem((int) $constraint->min);
-            }
-            if (null !== $constraint->max) {
-                $doc->setMaxItem((int) $constraint->max);
-            }
-        } elseif ($constraint instanceof Assert\Count) {
+        if ($constraint instanceof Assert\Choice || $constraint instanceof Assert\Count) {
             if (null !== $constraint->min) {
                 $doc->setMinItem((int) $constraint->min);
             }
@@ -130,5 +123,21 @@ class MinMaxHelper
         ) {
             $doc->setMin($constraint->value);
         }
+    }
+
+    /**
+     * @param array  $docArray
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return array
+     */
+    private function appendIfNotNull(array $docArray, string $key, $value) : array
+    {
+        if (null !== $value) {
+            $docArray[$key] = $value;
+        }
+
+        return $docArray;
     }
 }
