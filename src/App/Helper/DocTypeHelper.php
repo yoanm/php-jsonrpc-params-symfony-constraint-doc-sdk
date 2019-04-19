@@ -51,7 +51,7 @@ class DocTypeHelper
      *
      * @return TypeDoc|null
      */
-    protected function getDocFromTypeConstraintOrPayloadDocIfExist(array $constraintList)
+    protected function getDocFromTypeConstraintOrPayloadDocIfExist(array $constraintList) : ?TypeDoc
     {
         $doc = null;
         // Check if a Type constraint exist or if a constraint have a type documentation
@@ -87,7 +87,7 @@ class DocTypeHelper
      *
      * @return TypeDoc|null
      */
-    private function normalizeType(string $type)
+    private function normalizeType(string $type) : ?TypeDoc
     {
         if ('scalar' === $type) {
             return new ScalarDoc();

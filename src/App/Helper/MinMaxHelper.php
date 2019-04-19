@@ -17,7 +17,7 @@ class MinMaxHelper
      * @param TypeDoc    $doc
      * @param Constraint $constraint
      */
-    public function append(TypeDoc $doc, Constraint $constraint)
+    public function append(TypeDoc $doc, Constraint $constraint) : void
     {
         if ($doc instanceof StringDoc) {
             $this->appendStringDoc($doc, $constraint);
@@ -32,7 +32,7 @@ class MinMaxHelper
      * @param StringDoc  $doc
      * @param Constraint $constraint
      */
-    private function appendStringDoc(StringDoc $doc, Constraint $constraint)
+    private function appendStringDoc(StringDoc $doc, Constraint $constraint) : void
     {
         if ($constraint instanceof Assert\Length) {
             if (null !== $constraint->min) {
@@ -54,7 +54,7 @@ class MinMaxHelper
      * @param NumberDoc  $doc
      * @param Constraint $constraint
      */
-    private function appendNumberDoc(NumberDoc $doc, Constraint $constraint)
+    private function appendNumberDoc(NumberDoc $doc, Constraint $constraint) : void
     {
         $this->appendNumberMinMax($doc, $constraint);
 
@@ -69,7 +69,7 @@ class MinMaxHelper
      * @param CollectionDoc $doc
      * @param Constraint    $constraint
      */
-    private function appendCollectionDoc(CollectionDoc $doc, Constraint $constraint)
+    private function appendCollectionDoc(CollectionDoc $doc, Constraint $constraint) : void
     {
         if ($constraint instanceof Assert\Choice) {
             if (null !== $constraint->min) {
@@ -112,7 +112,7 @@ class MinMaxHelper
      * @param NumberDoc $doc
      * @param Constraint $constraint
      */
-    private function appendNumberMinMax(NumberDoc $doc, Constraint $constraint)
+    private function appendNumberMinMax(NumberDoc $doc, Constraint $constraint) : void
     {
         if ($constraint instanceof Assert\Range) {
             if (null !== $constraint->min) {

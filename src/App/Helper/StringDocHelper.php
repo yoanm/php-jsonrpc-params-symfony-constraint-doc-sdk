@@ -17,7 +17,7 @@ class StringDocHelper
      *
      * @throws \ReflectionException
      */
-    public function append(TypeDoc $doc, Constraint $constraint)
+    public function append(TypeDoc $doc, Constraint $constraint) : void
     {
         // If format already defined or type is defined and is not a string nor scalar => give up
         if (!$doc instanceof StringDoc) {

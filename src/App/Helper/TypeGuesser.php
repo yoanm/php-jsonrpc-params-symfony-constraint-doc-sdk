@@ -22,7 +22,7 @@ class TypeGuesser
      *
      * @return TypeDoc|null
      */
-    public function guessTypeFromConstraintList(array $constraintList)
+    public function guessTypeFromConstraintList(array $constraintList) : ?TypeDoc
     {
         $doc = $abstractTypeFound = null;
         foreach ($constraintList as $constraint) {
@@ -50,7 +50,7 @@ class TypeGuesser
      *
      * @return TypeDoc|null
      */
-    protected function guessTypeFromConstraint(Constraint $constraint)
+    protected function guessTypeFromConstraint(Constraint $constraint) : ?TypeDoc
     {
         if (null !== ($type = $this->guessPrimaryTypeFromConstraint($constraint))) {
             return $type;
@@ -86,7 +86,7 @@ class TypeGuesser
      *
      * @return null|ArrayDoc|BooleanDoc|ObjectDoc|ScalarDoc|StringDoc
      */
-    private function guessPrimaryTypeFromConstraint(Constraint $constraint)
+    private function guessPrimaryTypeFromConstraint(Constraint $constraint) : ?TypeDoc
     {
         static $stringConstraintClassList = [
             Assert\Length::class, // << Applied on string only
@@ -140,7 +140,7 @@ class TypeGuesser
      *
      * @return ScalarDoc|StringDoc
      */
-    private function guessDateTimeType(Assert\DateTime $constraint)
+    private function guessDateTimeType(Assert\DateTime $constraint) : TypeDoc
     {
         if ('U' === $constraint->format) {
             return new ScalarDoc();// Don't know if value will be an number as string or as integer
@@ -154,7 +154,7 @@ class TypeGuesser
      *
      * @return ArrayDoc|ObjectDoc
      */
-    private function guestCollectionType(Assert\Collection $constraint)
+    private function guestCollectionType(Assert\Collection $constraint) : TypeDoc
     {
         // If only integer => array, else object
         $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
