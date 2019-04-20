@@ -132,9 +132,9 @@ class MinMaxHelper
     }
 
     /**
-     * @param StringDoc $doc
-     * @param null|int  $min
-     * @param null|int  $max
+     * @param StringDoc      $doc
+     * @param null|int|mixed $min
+     * @param null|int|mixed $max
      */
     private function setMinMaxLengthIfNotNull(StringDoc $doc, $min, $max): void
     {
@@ -147,9 +147,9 @@ class MinMaxHelper
     }
 
     /**
-     * @param CollectionDoc $doc
-     * @param null|int      $min
-     * @param null|int      $max
+     * @param CollectionDoc  $doc
+     * @param null|int|mixed $min
+     * @param null|int|mixed $max
      */
     private function setMinMaxItemIfNotNull(CollectionDoc $doc, $min, $max): void
     {
@@ -162,9 +162,9 @@ class MinMaxHelper
     }
 
     /**
-     * @param NumberDoc      $doc
-     * @param null|int|float $min
-     * @param null|int|float $max
+     * @param NumberDoc       $doc
+     * @param null|int||mixed $min
+     * @param null|int||mixed $max
      */
     private function setMinMaxIfNotNull(NumberDoc $doc, $min, $max): void
     {
