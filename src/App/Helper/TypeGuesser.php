@@ -170,6 +170,11 @@ class TypeGuesser
             );
     }
 
+    /**
+     * @param Constraint $constraint
+     *
+     * @return TypeDoc|null
+     */
     private function guessSimplePrimaryTypeFromConstraint(Constraint $constraint) : ?TypeDoc
     {
         if (null !== $this->getMatchingClassNameIn($constraint, self::STRING_CONSTRAINT_CLASS_LIST)) {
