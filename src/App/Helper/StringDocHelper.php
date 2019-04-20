@@ -2,7 +2,7 @@
 namespace Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper;
 
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;
 use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
 
@@ -12,30 +12,30 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
 class StringDocHelper
 {
     const CONSTRAINT_WITH_FORMAT_FROM_CLASSNAME = [
-        Assert\Bic::class,
-        Assert\CardScheme::class,
-        Assert\Country::class,
-        Assert\Currency::class,
-        Assert\Date::class,
-        Assert\DateTime::class,
-        Assert\Range::class,
-        Assert\Email::class,
-        Assert\File::class,
-        Assert\Iban::class,
-        Assert\Ip::class,
-        Assert\Isbn::class,
-        Assert\Issn::class,
-        Assert\Language::class,
-        Assert\Locale::class,
-        Assert\Luhn::class,
-        Assert\Time::class,
-        Assert\Url::class,
-        Assert\Uuid::class,
+        Constraints\Bic::class => true,
+        Constraints\CardScheme::class => true,
+        Constraints\Country::class => true,
+        Constraints\Currency::class => true,
+        Constraints\Date::class => true,
+        Constraints\DateTime::class => true,
+        Constraints\Range::class => true,
+        Constraints\Email::class => true,
+        Constraints\File::class => true,
+        Constraints\Iban::class => true,
+        Constraints\Ip::class => true,
+        Constraints\Isbn::class => true,
+        Constraints\Issn::class => true,
+        Constraints\Language::class => true,
+        Constraints\Locale::class => true,
+        Constraints\Luhn::class => true,
+        Constraints\Time::class => true,
+        Constraints\Url::class => true,
+        Constraints\Uuid::class => true,
     ];
 
     const CONSTRAINT_WITH_FORMAT_FROM_PROPERTY = [
-        Assert\Regex::class => 'pattern',
-        Assert\Expression::class => 'expression',
+        Constraints\Regex::class => 'pattern',
+        Constraints\Expression::class => 'expression',
     ];
 
     /**
@@ -53,9 +53,9 @@ class StringDocHelper
 
         $constraintClass = get_class($constraint);
 
-        if (in_array($constraintClass, self::CONSTRAINT_WITH_FORMAT_FROM_CLASSNAME)) {
+        if (array_key_exists($constraintClass, self::CONSTRAINT_WITH_FORMAT_FROM_CLASSNAME)) {
             $this->enhanceFromClassName($doc, $constraint);
-        } elseif (in_array($constraintClass, self::CONSTRAINT_WITH_FORMAT_FROM_PROPERTY)) {
+        } elseif (array_key_exists($constraintClass, self::CONSTRAINT_WITH_FORMAT_FROM_PROPERTY)) {
             $propertyName = self::CONSTRAINT_WITH_FORMAT_FROM_PROPERTY[$constraintClass];
             $doc->setFormat($constraint->{$propertyName});
         }
@@ -69,7 +69,7 @@ class StringDocHelper
      */
     private function enhanceFromClassName(StringDoc $doc, Constraint $constraint): void
     {
-        if ($constraint instanceof Assert\DateTime || $constraint instanceof Assert\Range) {
+        if ($constraint instanceof Constraints\DateTime || $constraint instanceof Constraints\Range) {
             // If it's a string range it must be a date range check (either it must be an integer or float value)
             $format = 'datetime';
         } else {
@@ -77,7 +77,7 @@ class StringDocHelper
         }
         $doc->setFormat($format);
 
-        if ($constraint instanceof Assert\Uuid) {
+        if ($constraint instanceof Constraints\Uuid) {
             $formatDescription = sprintf(
                 '%s (%s)',
                 ucfirst($format),

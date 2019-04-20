@@ -142,10 +142,10 @@ class ConstraintToParamsDocTransformer
         $constraintClass = get_class($constraint);
         if ($constraint instanceof Assert\Choice) {
             $this->appendChoiceAllowedValue($doc, $constraint);
-        } elseif (in_array($constraintClass, self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST_FROM_PROPERTY)) {
+        } elseif (array_key_exists($constraintClass, self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST_FROM_PROPERTY)) {
             $propertyName = self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST_FROM_PROPERTY[$constraintClass];
             $this->addToAllowedValueListIfNotExist($doc, $constraint->{$propertyName});
-        } elseif (in_array($constraintClass, self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST)) {
+        } elseif (array_key_exists($constraintClass, self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST)) {
             $this->addListToAllowedValueListIfNotExist(
                 $doc,
                 self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST[$constraintClass]
@@ -191,6 +191,10 @@ class ConstraintToParamsDocTransformer
         return count(array_intersect($actualClassList, $classList)) > 0;
     }
 
+    /**
+     * @param TypeDoc $doc
+     * @param mixed[] $valueList
+     */
     private function addListToAllowedValueListIfNotExist(TypeDoc $doc, array $valueList) : void
     {
         foreach ($valueList as $value) {
@@ -198,6 +202,10 @@ class ConstraintToParamsDocTransformer
         }
     }
 
+    /**
+     * @param TypeDoc $doc
+     * @param mixed   $value
+     */
     private function addToAllowedValueListIfNotExist(TypeDoc $doc, $value) : void
     {
         if (!in_array($value, $doc->getAllowedValueList(), true)) {
