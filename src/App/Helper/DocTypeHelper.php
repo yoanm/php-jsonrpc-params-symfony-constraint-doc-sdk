@@ -107,16 +107,12 @@ class DocTypeHelper
     {
         $doc = null;
 
-        if (null !== ($typeFromPayload = $this->constraintPayloadDocHelper->getTypeIfExist($constraint))) {
-            $doc = $this->normalizeType($typeFromPayload);
-        } elseif ($constraint instanceof Assert\Type) {
-            $doc = $this->normalizeType(strtolower($constraint->type));
-        } elseif ($constraint instanceof Assert\IdenticalTo) {// Strict comparison so value define the type
-            $doc = $this->normalizeType(gettype($constraint->value));
-        } elseif ($constraint instanceof Assert\Existence && count($constraint->constraints) > 0) {
-            $doc = $this->guess($constraint->constraints);
+        if (null !== ($stringType = $this->getStringType($constraint))) {
+            $doc = $this->normalizeType($stringType);
         } elseif ($constraint instanceof Assert\Callback) {
             $doc = $this->getTypeFromCallbackConstraint($constraint);
+        } elseif ($constraint instanceof Assert\Existence && count($constraint->constraints) > 0) {
+            $doc = $this->guess($constraint->constraints);
         }
 
         return $doc;
@@ -136,5 +132,24 @@ class DocTypeHelper
                 : [$callbackResult]
         );
         return $doc;
+    }
+
+    /**
+     * @param Constraint $constraint
+     *
+     * @return string|null
+     */
+    private function getStringType(Constraint $constraint) : ?string
+    {
+        $stringType = null;
+        if (null !== ($typeFromPayload = $this->constraintPayloadDocHelper->getTypeIfExist($constraint))) {
+            $stringType = $typeFromPayload;
+        } elseif ($constraint instanceof Assert\Type) {
+            $stringType = strtolower($constraint->type);
+        } elseif ($constraint instanceof Assert\IdenticalTo) {// Strict comparison so value define the type
+            $stringType = gettype($constraint->value);
+        }
+
+        return $stringType;
     }
 }
