@@ -116,18 +116,12 @@ class TypeGuesser
     private function guessPrimaryTypeFromConstraint(Constraint $constraint) : ?TypeDoc
     {
         // Try to guess primary types
-        if (null !== $this->getMatchingClassNameIn($constraint, self::STRING_CONSTRAINT_CLASS_LIST)) {
-            return new StringDoc();
-        } elseif (null !== $this->getMatchingClassNameIn($constraint, self::BOOLEAN_CONSTRAINT_CLASS_LIST)) {
-            return new BooleanDoc();
+        if (null !== ($type = $this->guessSimplePrimaryTypeFromConstraint($constraint))) {
+            return $type;
         } elseif ($constraint instanceof Assert\DateTime) {
             return $this->guessDateTimeType($constraint);
         } elseif ($constraint instanceof Assert\Collection) {
             return $this->guestCollectionType($constraint);
-        } elseif ($constraint instanceof Assert\Regex) {
-            return new ScalarDoc();
-        } elseif ($this->isArrayConstraint($constraint)) {
-            return new ArrayDoc();
         }
 
         return null;
@@ -174,5 +168,20 @@ class TypeGuesser
             || ($constraint instanceof Assert\Choice
                 && true === $constraint->multiple // << expect an array multiple choices
             );
+    }
+
+    private function guessSimplePrimaryTypeFromConstraint(Constraint $constraint) : ?TypeDoc
+    {
+        if (null !== $this->getMatchingClassNameIn($constraint, self::STRING_CONSTRAINT_CLASS_LIST)) {
+            return new StringDoc();
+        } elseif (null !== $this->getMatchingClassNameIn($constraint, self::BOOLEAN_CONSTRAINT_CLASS_LIST)) {
+            return new BooleanDoc();
+        } elseif ($constraint instanceof Assert\Regex) {
+            return new ScalarDoc();
+        } elseif ($this->isArrayConstraint($constraint)) {
+            return new ArrayDoc();
+        }
+
+        return null;
     }
 }
