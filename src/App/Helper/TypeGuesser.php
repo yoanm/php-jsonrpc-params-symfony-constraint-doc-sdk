@@ -17,6 +17,33 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
  */
 class TypeGuesser
 {
+    use ClassComparatorTrait;
+
+    const STRING_CONSTRAINT_CLASS_LIST = [
+        Assert\Length::class, // << Applied on string only
+        Assert\Date::class,  // << validator expect a string with specific format
+        Assert\Time::class,  // << validator expect a string with specific format
+        Assert\Bic::class,
+        Assert\CardScheme::class,
+        Assert\Country::class,
+        Assert\Currency::class,
+        Assert\Email::class,
+        Assert\File::class,
+        Assert\Iban::class,
+        Assert\Ip::class,
+        Assert\Isbn::class,
+        Assert\Issn::class,
+        Assert\Language::class,
+        Assert\Locale::class,
+        Assert\Luhn::class,
+        Assert\Url::class,
+        Assert\Uuid::class,
+    ];
+    const BOOLEAN_CONSTRAINT_CLASS_LIST = [
+        Assert\IsTrue::class,
+        Assert\IsFalse::class,
+    ];
+
     /**
      * @param array $constraintList
      *
@@ -88,35 +115,10 @@ class TypeGuesser
      */
     private function guessPrimaryTypeFromConstraint(Constraint $constraint) : ?TypeDoc
     {
-        static $stringConstraintClassList = [
-            Assert\Length::class, // << Applied on string only
-            Assert\Date::class,  // << validator expect a string with specific format
-            Assert\Time::class,  // << validator expect a string with specific format
-            Assert\Bic::class,
-            Assert\CardScheme::class,
-            Assert\Country::class,
-            Assert\Currency::class,
-            Assert\Email::class,
-            Assert\File::class,
-            Assert\Iban::class,
-            Assert\Ip::class,
-            Assert\Isbn::class,
-            Assert\Issn::class,
-            Assert\Language::class,
-            Assert\Locale::class,
-            Assert\Luhn::class,
-            Assert\Url::class,
-            Assert\Uuid::class,
-        ];
-        static $booleanConstraintClassList = [
-            Assert\IsTrue::class,
-            Assert\IsFalse::class,
-        ];
-
         // Try to guess primary types
-        if ($this->isInstanceOfOneClassIn($constraint, $stringConstraintClassList)) {
+        if (null !== $this->getMatchingClassNameIn($constraint, self::STRING_CONSTRAINT_CLASS_LIST)) {
             return new StringDoc();
-        } elseif ($this->isInstanceOfOneClassIn($constraint, $booleanConstraintClassList)) {
+        } elseif (null !== $this->getMatchingClassNameIn($constraint, self::BOOLEAN_CONSTRAINT_CLASS_LIST)) {
             return new BooleanDoc();
         } elseif ($constraint instanceof Assert\DateTime) {
             return $this->guessDateTimeType($constraint);
@@ -124,11 +126,7 @@ class TypeGuesser
             return $this->guestCollectionType($constraint);
         } elseif ($constraint instanceof Assert\Regex) {
             return new ScalarDoc();
-        } elseif ($constraint instanceof Assert\All // << Applied only on array
-            || ($constraint instanceof Assert\Choice
-                && true === $constraint->multiple // << expect an array multiple choices
-            )
-        ) {
+        } elseif ($this->isArrayConstraint($constraint)) {
             return new ArrayDoc();
         }
 
@@ -166,24 +164,15 @@ class TypeGuesser
     }
 
     /**
-     * @param       $object
-     * @param array $classList
+     * @param Constraint $constraint
      *
      * @return bool
      */
-    private function isInstanceOfOneClassIn($object, array $classList) : bool
+    private function isArrayConstraint(Constraint $constraint): bool
     {
-        $actualClassList = array_merge(
-            [get_class($object)],
-            class_implements($object),
-            class_uses($object)
-        );
-        $parentClass = get_parent_class($object);
-        while (false !== $parentClass) {
-            $actualClassList[] = $parentClass;
-            $parentClass = get_parent_class($parentClass);
-        }
-
-        return count(array_intersect($actualClassList, $classList)) > 0;
+        return $constraint instanceof Assert\All // << Applied only on array
+            || ($constraint instanceof Assert\Choice
+                && true === $constraint->multiple // << expect an array multiple choices
+            );
     }
 }
