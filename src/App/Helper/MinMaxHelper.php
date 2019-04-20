@@ -81,12 +81,7 @@ class MinMaxHelper
         } elseif ($constraint instanceof Assert\NotBlank && null === $doc->getMinItem()) {
             // Not blank so minimum 1 item
             $doc->setMinItem(1);
-        }/* // Documentation does not mention array, counter to NotBlank constraint
-         elseif ($constraint instanceof Assert\Blank && null === $doc->getMaxItem()) {
-            // Blank so maximum 0 item
-            $doc->setMaxItem(0);
-        }*/
-        if ($constraint instanceof Assert\GreaterThan || $constraint instanceof Assert\GreaterThanOrEqual) {
+        } elseif ($constraint instanceof Assert\GreaterThan || $constraint instanceof Assert\GreaterThanOrEqual) {
             $doc->setMinItem(
                 $constraint instanceof Assert\GreaterThanOrEqual
                     ? $constraint->value
@@ -98,7 +93,11 @@ class MinMaxHelper
                     ? $constraint->value
                     : $constraint->value - 1
             );
-        }
+        } /* Documentation does not mention array, counter to NotBlank constraint
+         elseif ($constraint instanceof Assert\Blank && null === $doc->getMaxItem()) {
+            // Blank so maximum 0 item
+            $doc->setMaxItem(0);
+        }*/
     }
 
     /**
