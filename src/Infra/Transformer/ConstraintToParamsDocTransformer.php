@@ -25,6 +25,17 @@ class ConstraintToParamsDocTransformer
     /** @var ConstraintPayloadDocHelper */
     private $constraintPayloadDocHelper;
 
+    const CONSTRAINT_WITH_ALLOWED_VALUE_LIST = [
+        Assert\IsTrue::class => [true, 1, '1'],
+        Assert\IsFalse::class => [false, 0, '0'],
+        Assert\IsNull::class => [null],
+    ];
+
+    const CONSTRAINT_WITH_ALLOWED_VALUE_LIST_FROM_PROPERTY = [
+        Assert\IdenticalTo::class => 'value',
+        Assert\EqualTo::class => 'value',
+    ];
+
     /**
      * @param DocTypeHelper              $docTypeHelper
      * @param StringDocHelper            $stringDocHelper
@@ -128,29 +139,17 @@ class ConstraintToParamsDocTransformer
      */
     private function appendValidItemListDoc(TypeDoc $doc, Constraint $constraint) : void
     {
+        $constraintClass = get_class($constraint);
         if ($constraint instanceof Assert\Choice) {
-            if ($constraint->callback && is_callable($constraint->callback)) {
-                $choiceList = call_user_func($constraint->callback);
-            } else {
-                $choiceList = $constraint->choices ?? [];
-            }
-            foreach ($choiceList as $choice) {
-                $this->addToAllowedValueListIfNotExist($doc, $choice);
-            }
-        } elseif ($constraint instanceof Assert\IsNull) {
-            $this->addToAllowedValueListIfNotExist($doc, null);
-        } elseif ($constraint instanceof Assert\IdenticalTo) {
-            $this->addToAllowedValueListIfNotExist($doc, $constraint->value);
-        } elseif ($constraint instanceof Assert\IsTrue) {
-            $this->addToAllowedValueListIfNotExist($doc, true);
-            $this->addToAllowedValueListIfNotExist($doc, 1);
-            $this->addToAllowedValueListIfNotExist($doc, '1');
-        } elseif ($constraint instanceof Assert\IsFalse) {
-            $this->addToAllowedValueListIfNotExist($doc, false);
-            $this->addToAllowedValueListIfNotExist($doc, 0);
-            $this->addToAllowedValueListIfNotExist($doc, '0');
-        } elseif ($constraint instanceof Assert\EqualTo) {
-            $this->addToAllowedValueListIfNotExist($doc, $constraint->value);
+            $this->appendChoiceAllowedValue($doc, $constraint);
+        } elseif (in_array($constraintClass, self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST_FROM_PROPERTY)) {
+            $propertyName = self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST_FROM_PROPERTY[$constraintClass];
+            $this->addToAllowedValueListIfNotExist($doc, $constraint->{$propertyName});
+        } elseif (in_array($constraintClass, self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST)) {
+            $this->addListToAllowedValueListIfNotExist(
+                $doc,
+                self::CONSTRAINT_WITH_ALLOWED_VALUE_LIST[$constraintClass]
+            );
         }
     }
 
@@ -190,6 +189,13 @@ class ConstraintToParamsDocTransformer
         }
 
         return count(array_intersect($actualClassList, $classList)) > 0;
+    }
+
+    private function addListToAllowedValueListIfNotExist(TypeDoc $doc, array $valueList) : void
+    {
+        foreach ($valueList as $value) {
+            $this->addToAllowedValueListIfNotExist($doc, $value);
+        }
     }
 
     private function addToAllowedValueListIfNotExist(TypeDoc $doc, $value) : void
@@ -247,5 +253,19 @@ class ConstraintToParamsDocTransformer
             $doc->setDefault($doc->getDefault() ?? $defaultValue);
             $doc->setExample($doc->getExample() ?? $exampleValue);
         }
+    }
+
+    /**
+     * @param TypeDoc       $doc
+     * @param Assert\Choice $constraint
+     */
+    private function appendChoiceAllowedValue(TypeDoc $doc, Assert\Choice $constraint): void
+    {
+        if ($constraint->callback && is_callable($constraint->callback)) {
+            $choiceList = call_user_func($constraint->callback);
+        } else {
+            $choiceList = $constraint->choices ?? [];
+        }
+        $this->addListToAllowedValueListIfNotExist($doc, $choiceList);
     }
 }
