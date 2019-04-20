@@ -165,9 +165,9 @@ class MinMaxHelper
     }
 
     /**
-     * @param NumberDoc       $doc
-     * @param null|int||mixed $min
-     * @param null|int||mixed $max
+     * @param NumberDoc      $doc
+     * @param null|int|mixed $min
+     * @param null|int|mixed $max
      */
     private function setMinMaxIfNotNull(NumberDoc $doc, $min, $max): void
     {
