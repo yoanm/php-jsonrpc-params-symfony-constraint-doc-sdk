@@ -81,13 +81,6 @@ class ConstraintToParamsDocTransformer
      */
     private function appendToDoc(TypeDoc $doc, Constraint $constraint) : void
     {
-        static $notNullConstraintList = [
-            Assert\NotNull::class,
-            Assert\IsTrue::class, // If it is true, it cannot be null ...
-            Assert\IsFalse::class, // If it is false, it cannot be null ...
-            // If should be identical to something, it cannot be null (but can be identical to null)
-            Assert\IdenticalTo::class,
-        ];
         if ($constraint instanceof Assert\Callback) {
             $callbackResult = call_user_func($constraint->callback);
             $callbackResultList = is_array($callbackResult) ? $callbackResult : [$callbackResult];
@@ -97,38 +90,7 @@ class ConstraintToParamsDocTransformer
         } elseif ($doc instanceof ArrayDoc && $constraint instanceof Assert\All) {
             $this->appendAllConstraintToDoc($doc, $constraint);
         } else {
-            $this->stringDocHelper->append($doc, $constraint);
-            $this->appendCollectionDoc($doc, $constraint);
-
-            $this->minMaxHelper->append($doc, $constraint);
-            $this->appendValidItemListDoc($doc, $constraint);
-
-            if ($constraint instanceof Assert\Existence) {
-                $doc->setRequired($constraint instanceof Assert\Required);
-                foreach ($constraint->constraints as $subConstraint) {
-                    $this->appendToDoc($doc, $subConstraint);
-                }
-            } elseif ($this->isInstanceOfOneClassIn($constraint, $notNullConstraintList)) {
-                $doc->setNullable(
-                    ($constraint instanceof Assert\IdenticalTo)
-                        ? is_null($constraint->value)
-                        : false
-                );
-                $defaultValue = $exampleValue = null;
-                switch (true) {
-                    case $constraint instanceof Assert\IsTrue:
-                        $defaultValue = $exampleValue = true;
-                        break;
-                    case $constraint instanceof Assert\IsFalse:
-                        $defaultValue = $exampleValue = false;
-                        break;
-                    case $constraint instanceof Assert\IdenticalTo:
-                        $defaultValue = $exampleValue = $constraint->value;
-                        break;
-                }
-                $doc->setDefault($doc->getDefault() ?? $defaultValue);
-                $doc->setExample($doc->getExample() ?? $exampleValue);
-            }
+            $this->basicAppendToDoc($doc, $constraint);
         }
         // /!\ Payload doc will override values even if already defined
         $this->constraintPayloadDocHelper->appendPayloadDoc($doc, $constraint);
@@ -234,6 +196,56 @@ class ConstraintToParamsDocTransformer
     {
         if (!in_array($value, $doc->getAllowedValueList(), true)) {
             $doc->addAllowedValue($value);
+        }
+    }
+
+    /**
+     * @param TypeDoc    $doc
+     * @param Constraint $constraint
+     *
+     * @throws \ReflectionException
+     */
+    private function basicAppendToDoc(TypeDoc $doc, Constraint $constraint): void
+    {
+        static $notNullConstraintList = [
+            Assert\NotNull::class,
+            Assert\IsTrue::class, // If it is true, it cannot be null ...
+            Assert\IsFalse::class, // If it is false, it cannot be null ...
+            // If should be identical to something, it cannot be null (but can be identical to null)
+            Assert\IdenticalTo::class,
+        ];
+
+        $this->stringDocHelper->append($doc, $constraint);
+        $this->appendCollectionDoc($doc, $constraint);
+
+        $this->minMaxHelper->append($doc, $constraint);
+        $this->appendValidItemListDoc($doc, $constraint);
+
+        if ($constraint instanceof Assert\Existence) {
+            $doc->setRequired($constraint instanceof Assert\Required);
+            foreach ($constraint->constraints as $subConstraint) {
+                $this->appendToDoc($doc, $subConstraint);
+            }
+        } elseif ($this->isInstanceOfOneClassIn($constraint, $notNullConstraintList)) {
+            $doc->setNullable(
+                ($constraint instanceof Assert\IdenticalTo)
+                    ? is_null($constraint->value)
+                    : false
+            );
+            $defaultValue = $exampleValue = null;
+            switch (true) {
+                case $constraint instanceof Assert\IsTrue:
+                    $defaultValue = $exampleValue = true;
+                    break;
+                case $constraint instanceof Assert\IsFalse:
+                    $defaultValue = $exampleValue = false;
+                    break;
+                case $constraint instanceof Assert\IdenticalTo:
+                    $defaultValue = $exampleValue = $constraint->value;
+                    break;
+            }
+            $doc->setDefault($doc->getDefault() ?? $defaultValue);
+            $doc->setExample($doc->getExample() ?? $exampleValue);
         }
     }
 }
