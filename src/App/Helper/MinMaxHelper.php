@@ -13,6 +13,8 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
  */
 class MinMaxHelper
 {
+    use ClassComparatorTrait;
+
     /**
      * @param TypeDoc    $doc
      * @param Constraint $constraint
@@ -116,13 +118,14 @@ class MinMaxHelper
     private function appendLessGreaterThanMinMaxItem(CollectionDoc $doc, Constraint $constraint): void
     {
         $min = $max = null;
-        if ($constraint instanceof Assert\GreaterThan || $constraint instanceof Assert\GreaterThanOrEqual) {
-            $min = $constraint instanceof Assert\GreaterThanOrEqual
+        $gtConstraintList = [Assert\GreaterThan::class, Assert\GreaterThanOrEqual::class];
+        $ltConstraintList = [Assert\LessThan::class, Assert\LessThanOrEqual::class];
+        if (null !== ($match = $this->getMatchingClassNameIn($constraint, $gtConstraintList))) {
+            $min = ($match === Assert\GreaterThanOrEqual::class)
                 ? $constraint->value
-                : ($constraint->value + 1)
-            ;
-        } elseif ($constraint instanceof Assert\LessThan || $constraint instanceof Assert\LessThanOrEqual) {
-            $max = $constraint instanceof Assert\LessThanOrEqual
+                : $constraint->value + 1;
+        } elseif (null !== ($match = $this->getMatchingClassNameIn($constraint, $ltConstraintList))) {
+            $max = ($match === Assert\LessThanOrEqual::class)
                 ? $constraint->value
                 : $constraint->value - 1
             ;

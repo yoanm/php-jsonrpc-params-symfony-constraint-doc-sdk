@@ -126,11 +126,7 @@ class TypeGuesser
             return $this->guestCollectionType($constraint);
         } elseif ($constraint instanceof Assert\Regex) {
             return new ScalarDoc();
-        } elseif ($constraint instanceof Assert\All // << Applied only on array
-            || ($constraint instanceof Assert\Choice
-                && true === $constraint->multiple // << expect an array multiple choices
-            )
-        ) {
+        } elseif ($this->isArrayConstraint($constraint)) {
             return new ArrayDoc();
         }
 
@@ -166,4 +162,17 @@ class TypeGuesser
 
         return new ObjectDoc();
     }
+
+    /**
+     * @param Constraint $constraint
+     *
+     * @return bool
+     */
+    private function isArrayConstraint(Constraint $constraint): bool
+    {
+        return $constraint instanceof Assert\All // << Applied only on array
+            || ($constraint instanceof Assert\Choice
+                && true === $constraint->multiple // << expect an array multiple choices
+            );
+}
 }

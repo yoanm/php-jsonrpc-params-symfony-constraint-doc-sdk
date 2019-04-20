@@ -39,7 +39,7 @@ class ConstraintToParamsDocTransformer
         Assert\EqualTo::class => 'value',
     ];
 
-    const NOT_NULL_CONSTRAINT_LIST = [
+    const NULL_NOT_NULL_CONSTRAINT_LIST = [
         Assert\NotNull::class,
         Assert\IsTrue::class, // If it is true, it cannot be null ...
         Assert\IsFalse::class, // If it is false, it cannot be null ...
@@ -223,27 +223,9 @@ class ConstraintToParamsDocTransformer
         $this->appendValidItemListDoc($doc, $constraint);
 
         if ($constraint instanceof Assert\Existence) {
-            $doc->setRequired($constraint instanceof Assert\Required);
-            foreach ($constraint->constraints as $subConstraint) {
-                $this->appendToDoc($doc, $subConstraint);
-            }
-        } elseif (null !== $this->getMatchingClassNameIn($constraint, self::NOT_NULL_CONSTRAINT_LIST)) {
-            $isIdenticalTo = $constraint instanceof Assert\IdenticalTo;
-            $doc->setNullable($isIdenticalTo ? is_null($constraint->value) : false);
-            $defaultValue = $exampleValue = null;
-            switch (true) {
-                case $constraint instanceof Assert\IsTrue:
-                    $defaultValue = $exampleValue = true;
-                    break;
-                case $constraint instanceof Assert\IsFalse:
-                    $defaultValue = $exampleValue = false;
-                    break;
-                case $isIdenticalTo:
-                    $defaultValue = $exampleValue = $constraint->value;
-                    break;
-            }
-            $doc->setDefault($doc->getDefault() ?? $defaultValue);
-            $doc->setExample($doc->getExample() ?? $exampleValue);
+            $this->appendExistenceConstraintData($doc, $constraint);
+        } elseif (null !== ($match = $this->getMatchingClassNameIn($constraint, self::NULL_NOT_NULL_CONSTRAINT_LIST))) {
+            $this->setNulNotNullConstraintData($doc, $constraint, $match);
         }
     }
 
@@ -259,5 +241,44 @@ class ConstraintToParamsDocTransformer
             $choiceList = $constraint->choices ?? [];
         }
         $this->addListToAllowedValueListIfNotExist($doc, $choiceList);
+    }
+
+    /**
+     * @param TypeDoc    $doc
+     * @param Constraint $constraint
+     * @param string     $sanitizedClass
+     */
+    private function setNulNotNullConstraintData(TypeDoc $doc, Constraint $constraint, string $sanitizedClass): void
+    {
+        $isIdenticalTo = $sanitizedClass === Assert\IdenticalTo::class;
+        $doc->setNullable($isIdenticalTo ? is_null($constraint->value) : false);
+        $defaultValue = $exampleValue = null;
+        switch (true) {
+            case $sanitizedClass === Assert\IsTrue::class:
+                $defaultValue = $exampleValue = true;
+                break;
+            case $sanitizedClass === Assert\IsFalse::class:
+                $defaultValue = $exampleValue = false;
+                break;
+            case $isIdenticalTo:
+                $defaultValue = $exampleValue = $constraint->value;
+                break;
+        }
+        $doc->setDefault($doc->getDefault() ?? $defaultValue);
+        $doc->setExample($doc->getExample() ?? $exampleValue);
+    }
+
+    /**
+     * @param TypeDoc          $doc
+     * @param Assert\Existence $constraint
+     *
+     * @throws \ReflectionException
+     */
+    private function appendExistenceConstraintData(TypeDoc $doc, Assert\Existence $constraint): void
+    {
+        $doc->setRequired($constraint instanceof Assert\Required);
+        foreach ($constraint->constraints as $subConstraint) {
+            $this->appendToDoc($doc, $subConstraint);
+        }
     }
 }

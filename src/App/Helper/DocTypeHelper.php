@@ -116,14 +116,25 @@ class DocTypeHelper
         } elseif ($constraint instanceof Assert\Existence && count($constraint->constraints) > 0) {
             $doc = $this->guess($constraint->constraints);
         } elseif ($constraint instanceof Assert\Callback) {
-            $callbackResult = call_user_func($constraint->callback);
-            $doc = $this->guess(
-                is_array($callbackResult)
-                    ? $callbackResult
-                    : [$callbackResult]
-            );
+            $doc = $this->getTypeFromCallbackConstraint($constraint);
         }
 
         return $doc;
     }
+
+    /**
+     * @param Assert\Callback $constraint
+     *
+     * @return TypeDoc
+     */
+    private function getTypeFromCallbackConstraint(Assert\Callback $constraint): TypeDoc
+    {
+        $callbackResult = call_user_func($constraint->callback);
+        $doc = $this->guess(
+            is_array($callbackResult)
+                ? $callbackResult
+                : [$callbackResult]
+        );
+        return $doc;
+}
 }
