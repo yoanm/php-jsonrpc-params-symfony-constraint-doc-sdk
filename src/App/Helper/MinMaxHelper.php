@@ -34,20 +34,19 @@ class MinMaxHelper
      */
     private function appendStringDoc(StringDoc $doc, Constraint $constraint) : void
     {
+        $min = $max = null;
         if ($constraint instanceof Assert\Length) {
-            if (null !== $constraint->min) {
-                $doc->setMinLength((int) $constraint->min);
-            }
-            if (null !== $constraint->max) {
-                $doc->setMaxLength((int) $constraint->max);
-            }
+            $min = $constraint->min;
+            $max = $constraint->max;
         } elseif ($constraint instanceof Assert\NotBlank && null === $doc->getMinLength()) {
             // Not blank so minimum 1 character
-            $doc->setMinLength(1);
+            $min = 1;
         } elseif ($constraint instanceof Assert\Blank && null === $doc->getMaxLength()) {
             // Blank so maximum 0 character
-            $doc->setMaxLength(0);
+            $max = 0;
         }
+
+        $this->setMinMaxLengthIfNotNull($doc, $min, $max);
     }
 
     /**
@@ -71,21 +70,19 @@ class MinMaxHelper
      */
     private function appendCollectionDoc(CollectionDoc $doc, Constraint $constraint) : void
     {
+        $min = $max = null;
         if ($constraint instanceof Assert\Choice || $constraint instanceof Assert\Count) {
-            if (null !== $constraint->min) {
-                $doc->setMinItem((int) $constraint->min);
-            }
-            if (null !== $constraint->max) {
-                $doc->setMaxItem((int) $constraint->max);
-            }
+            $min = $constraint->min;
+            $max = $constraint->max;
         } elseif ($constraint instanceof Assert\NotBlank && null === $doc->getMinItem()) {
             // Not blank so minimum 1 item
-            $doc->setMinItem(1);
+            $min = 1;
         } /* Documentation does not mention array, counter to NotBlank constraint
          elseif ($constraint instanceof Assert\Blank && null === $doc->getMaxItem()) {
             // Blank so maximum 0 item
-            $doc->setMaxItem(0);
+            $max = 0;
         }*/
+        $this->setMinMaxItemIfNotNull($doc, $min, $max);
         $this->appendLessGreaterThanMinMaxItem($doc, $constraint);
     }
 
@@ -95,22 +92,21 @@ class MinMaxHelper
      */
     private function appendNumberMinMax(NumberDoc $doc, Constraint $constraint) : void
     {
+        $min = $max = null;
         if ($constraint instanceof Assert\Range) {
-            if (null !== $constraint->min) {
-                $doc->setMin($constraint->min);
-            }
-            if (null !== $constraint->max) {
-                $doc->setMax($constraint->max);
-            }
+            $min = $constraint->min;
+            $max = $constraint->max;
         } elseif ($constraint instanceof Assert\LessThanOrEqual
             || $constraint instanceof Assert\LessThan
         ) {
-            $doc->setMax($constraint->value);
+            $max = $constraint->value;
         } elseif ($constraint instanceof Assert\GreaterThanOrEqual
             || $constraint instanceof Assert\GreaterThan
         ) {
-            $doc->setMin($constraint->value);
+            $min = $constraint->value;
         }
+
+        $this->setMinMaxIfNotNull($doc, $min, $max);
     }
 
     /**
@@ -119,18 +115,64 @@ class MinMaxHelper
      */
     private function appendLessGreaterThanMinMaxItem(CollectionDoc $doc, Constraint $constraint): void
     {
+        $min = $max = null;
         if ($constraint instanceof Assert\GreaterThan || $constraint instanceof Assert\GreaterThanOrEqual) {
-            $doc->setMinItem(
-                $constraint instanceof Assert\GreaterThanOrEqual
-                    ? $constraint->value
-                    : $constraint->value + 1
-            );
+            $min = $constraint instanceof Assert\GreaterThanOrEqual
+                ? $constraint->value
+                : ($constraint->value + 1)
+            ;
         } elseif ($constraint instanceof Assert\LessThan || $constraint instanceof Assert\LessThanOrEqual) {
-            $doc->setMaxItem(
-                $constraint instanceof Assert\LessThanOrEqual
-                    ? $constraint->value
-                    : $constraint->value - 1
-            );
+            $max = $constraint instanceof Assert\LessThanOrEqual
+                ? $constraint->value
+                : $constraint->value - 1
+            ;
+        }
+
+        $this->setMinMaxItemIfNotNull($doc, $min, $max);
+    }
+
+    /**
+     * @param StringDoc $doc
+     * @param null|int  $min
+     * @param null|int  $max
+     */
+    private function setMinMaxLengthIfNotNull(StringDoc $doc, $min, $max): void
+    {
+        if (null !== $min) {
+            $doc->setMinLength((int)$min);
+        }
+        if (null !== $max) {
+            $doc->setMaxLength((int)$max);
+        }
+    }
+
+    /**
+     * @param CollectionDoc $doc
+     * @param null|int      $min
+     * @param null|int      $max
+     */
+    private function setMinMaxItemIfNotNull(CollectionDoc $doc, $min, $max): void
+    {
+        if (null !== $min) {
+            $doc->setMinItem((int) $min);
+        }
+        if (null !== $max) {
+            $doc->setMaxItem((int) $max);
+        }
+    }
+
+    /**
+     * @param NumberDoc      $doc
+     * @param null|int|float $min
+     * @param null|int|float $max
+     */
+    private function setMinMaxIfNotNull(NumberDoc $doc, $min, $max): void
+    {
+        if (null !== $min) {
+            $doc->setMin($min);
+        }
+        if (null !== $max) {
+            $doc->setMax($max);
         }
     }
 }

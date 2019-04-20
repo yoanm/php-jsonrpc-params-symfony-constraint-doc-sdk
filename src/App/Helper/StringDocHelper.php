@@ -11,26 +11,28 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
  */
 class StringDocHelper
 {
+    use ClassComparatorTrait;
+
     const CONSTRAINT_WITH_FORMAT_FROM_CLASSNAME = [
-        Constraints\Bic::class => true,
-        Constraints\CardScheme::class => true,
-        Constraints\Country::class => true,
-        Constraints\Currency::class => true,
-        Constraints\Date::class => true,
-        Constraints\DateTime::class => true,
-        Constraints\Range::class => true,
-        Constraints\Email::class => true,
-        Constraints\File::class => true,
-        Constraints\Iban::class => true,
-        Constraints\Ip::class => true,
-        Constraints\Isbn::class => true,
-        Constraints\Issn::class => true,
-        Constraints\Language::class => true,
-        Constraints\Locale::class => true,
-        Constraints\Luhn::class => true,
-        Constraints\Time::class => true,
-        Constraints\Url::class => true,
-        Constraints\Uuid::class => true,
+        Constraints\Bic::class,
+        Constraints\CardScheme::class,
+        Constraints\Country::class,
+        Constraints\Currency::class,
+        Constraints\Date::class,
+        Constraints\DateTime::class,
+        Constraints\Range::class,
+        Constraints\Email::class,
+        Constraints\File::class,
+        Constraints\Iban::class,
+        Constraints\Ip::class,
+        Constraints\Isbn::class,
+        Constraints\Issn::class,
+        Constraints\Language::class,
+        Constraints\Locale::class,
+        Constraints\Luhn::class,
+        Constraints\Time::class,
+        Constraints\Url::class,
+        Constraints\Uuid::class,
     ];
 
     const CONSTRAINT_WITH_FORMAT_FROM_PROPERTY = [
@@ -51,13 +53,13 @@ class StringDocHelper
             return;
         }
 
-        $constraintClass = get_class($constraint);
-
-        if (array_key_exists($constraintClass, self::CONSTRAINT_WITH_FORMAT_FROM_CLASSNAME)) {
+        if (null !== $this->getMatchingClassNameIn($constraint, self::CONSTRAINT_WITH_FORMAT_FROM_CLASSNAME)) {
             $this->enhanceFromClassName($doc, $constraint);
-        } elseif (array_key_exists($constraintClass, self::CONSTRAINT_WITH_FORMAT_FROM_PROPERTY)) {
-            $propertyName = self::CONSTRAINT_WITH_FORMAT_FROM_PROPERTY[$constraintClass];
-            $doc->setFormat($constraint->{$propertyName});
+        } elseif (null !== ($match = $this->getMatchingClassNameIn(
+            $constraint,
+            array_keys(self::CONSTRAINT_WITH_FORMAT_FROM_PROPERTY)
+        ))) {
+            $doc->setFormat($constraint->{self::CONSTRAINT_WITH_FORMAT_FROM_PROPERTY[$match]});
         }
     }
 
@@ -69,7 +71,8 @@ class StringDocHelper
      */
     private function enhanceFromClassName(StringDoc $doc, Constraint $constraint): void
     {
-        if ($constraint instanceof Constraints\DateTime || $constraint instanceof Constraints\Range) {
+        static $dateTimeClassList = [Constraints\DateTime::class, Constraints\Range::class];
+        if (null !== $this->getMatchingClassNameIn($constraint, $dateTimeClassList)) {
             // If it's a string range it must be a date range check (either it must be an integer or float value)
             $format = 'datetime';
         } else {

@@ -23,6 +23,22 @@ class DocTypeHelper
     /** @var TypeGuesser */
     private $typeGuesser;
 
+    const MANAGED_TYPE_CLASS_LIST = [
+        'scalar' => ScalarDoc::class,
+        'string' => StringDoc::class,
+        'bool' => BooleanDoc::class,
+        'boolean' => BooleanDoc::class,
+        'int' => IntegerDoc::class,
+        'integer' => IntegerDoc::class,
+        'float' => FloatDoc::class,
+        'long' => FloatDoc::class,
+        'double' => FloatDoc::class,
+        'real' => FloatDoc::class,
+        'numeric' => NumberDoc::class,
+        'array' => ArrayDoc::class,
+        'object' => ObjectDoc::class,
+    ];
+
     /**
      * @param ConstraintPayloadDocHelper $constraintPayloadDocHelper
      * @param TypeGuesser                $typeGuesser
@@ -56,23 +72,7 @@ class DocTypeHelper
         $doc = null;
         // Check if a Type constraint exist or if a constraint have a type documentation
         foreach ($constraintList as $constraint) {
-            if (null !== ($typeFromPayload = $this->constraintPayloadDocHelper->getTypeIfExist($constraint))) {
-                $doc = $this->normalizeType($typeFromPayload);
-            } elseif ($constraint instanceof Assert\Type) {
-                $doc = $this->normalizeType(strtolower($constraint->type));
-            } elseif ($constraint instanceof Assert\Existence && count($constraint->constraints) > 0) {
-                $doc = $this->guess($constraint->constraints);
-            } elseif ($constraint instanceof Assert\IdenticalTo) {
-                // Strict comparison so value define the type
-                $doc = $this->normalizeType(gettype($constraint->value));
-            } elseif ($constraint instanceof Assert\Callback) {
-                $callbackResult = call_user_func($constraint->callback);
-                $doc = $this->guess(
-                    is_array($callbackResult)
-                        ? $callbackResult
-                        : [$callbackResult]
-                );
-            }
+            $doc = $this->createDocFromConstraint($constraint);
 
             if (null !== $doc) {
                 break;
@@ -89,24 +89,41 @@ class DocTypeHelper
      */
     private function normalizeType(string $type) : ?TypeDoc
     {
-        if ('scalar' === $type) {
-            return new ScalarDoc();
-        } elseif ('string' === $type) {
-            return new StringDoc();
-        } elseif (in_array($type, ['bool', 'boolean'])) {
-            return new BooleanDoc();
-        } elseif (in_array($type, ['int', 'integer'])) {
-            return new IntegerDoc();
-        } elseif (in_array($type, ['float', 'long', 'double', 'real'])) {
-            return new FloatDoc();
-        } elseif ('numeric' === $type) {
-            return new NumberDoc();
-        } elseif ('array' === $type) {
-            return new ArrayDoc();
-        } elseif ('object' === $type) {
-            return new ObjectDoc();
+        if (array_key_exists($type, self::MANAGED_TYPE_CLASS_LIST)) {
+            $class = self::MANAGED_TYPE_CLASS_LIST[$type];
+
+            return new $class();
         }
 
         return null;
+    }
+
+    /**
+     * @param Constraint $constraint
+     *
+     * @return TypeDoc|null
+     */
+    private function createDocFromConstraint(Constraint $constraint) : ?TypeDoc
+    {
+        $doc = null;
+
+        if (null !== ($typeFromPayload = $this->constraintPayloadDocHelper->getTypeIfExist($constraint))) {
+            $doc = $this->normalizeType($typeFromPayload);
+        } elseif ($constraint instanceof Assert\Type) {
+            $doc = $this->normalizeType(strtolower($constraint->type));
+        } elseif ($constraint instanceof Assert\IdenticalTo) {// Strict comparison so value define the type
+            $doc = $this->normalizeType(gettype($constraint->value));
+        } elseif ($constraint instanceof Assert\Existence && count($constraint->constraints) > 0) {
+            $doc = $this->guess($constraint->constraints);
+        } elseif ($constraint instanceof Assert\Callback) {
+            $callbackResult = call_user_func($constraint->callback);
+            $doc = $this->guess(
+                is_array($callbackResult)
+                    ? $callbackResult
+                    : [$callbackResult]
+            );
+        }
+
+        return $doc;
     }
 }
