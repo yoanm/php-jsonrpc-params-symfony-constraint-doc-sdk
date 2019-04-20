@@ -174,5 +174,5 @@ class TypeGuesser
             || ($constraint instanceof Assert\Choice
                 && true === $constraint->multiple // << expect an array multiple choices
             );
-}
+    }
 }

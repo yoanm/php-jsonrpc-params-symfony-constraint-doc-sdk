@@ -136,5 +136,5 @@ class DocTypeHelper
                 : [$callbackResult]
         );
         return $doc;
-}
+    }
 }
