@@ -179,25 +179,4 @@ class MinMaxHelper
             $doc->setMax($max);
         }
     }
-
-    /**
-     * @param CollectionDoc $doc
-     * @param Constraint    $constraint
-     */
-    private function appendLessGreaterThanMinMaxItem(CollectionDoc $doc, Constraint $constraint): void
-    {
-        if ($constraint instanceof Assert\GreaterThan || $constraint instanceof Assert\GreaterThanOrEqual) {
-            $doc->setMinItem(
-                $constraint instanceof Assert\GreaterThanOrEqual
-                    ? $constraint->value
-                    : $constraint->value + 1
-            );
-        } elseif ($constraint instanceof Assert\LessThan || $constraint instanceof Assert\LessThanOrEqual) {
-            $doc->setMaxItem(
-                $constraint instanceof Assert\LessThanOrEqual
-                    ? $constraint->value
-                    : $constraint->value - 1
-            );
-        }
-    }
 }
