@@ -19,7 +19,7 @@ class AppendPayloadDocTest extends TestCase
     /** @var ConstraintPayloadDocHelper */
     private $helper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->helper = new ConstraintPayloadDocHelper();
     }
