@@ -36,7 +36,7 @@ class ConstraintToParamsDocTransformerTest extends TestCase
     /** @var ConstraintToParamsDocTransformer */
     private $transformer;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->docTypeHelper = $this->prophesize(DocTypeHelper::class);
         $this->stringDocHelper = $this->prophesize(StringDocHelper::class);
