@@ -26,7 +26,7 @@ class DocTypeHelperTest extends TestCase
     /** @var DocTypeHelper */
     private $helper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->constraintPayloadDocHelper = $this->prophesize(ConstraintPayloadDocHelper::class);
         $this->typeGuesser = $this->prophesize(TypeGuesser::class);
