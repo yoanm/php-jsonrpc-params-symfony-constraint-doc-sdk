@@ -25,8 +25,6 @@ Feature: ConstraintToParamsDocTransformer - Email constraint
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
     return new ConstraintNS\Email([
-      'checkMX' => false,
-      'checkHost' => false,
       'payload' => [
         'documentation' => [
           'description' => 'description',
