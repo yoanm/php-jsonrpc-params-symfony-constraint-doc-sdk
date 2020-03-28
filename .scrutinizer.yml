@@ -47,7 +47,7 @@ build:
             COVERAGE_CLOVER_FILE_PATH: 'build/coverage/clover.xml'
             PHPCS_DISABLE_WARNING: "true"
         php:
-            version: "7.2"
+            version: "7.3"
         timezone: UTC
         postgresql: false
         redis: false
