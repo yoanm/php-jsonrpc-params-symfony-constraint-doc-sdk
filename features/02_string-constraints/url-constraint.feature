@@ -25,7 +25,6 @@ Feature: ConstraintToParamsDocTransformer - Url constraint
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
     return new ConstraintNS\Url([
-      'checkDNS' => true,
       'payload' => [
         'documentation' => [
           'type' => 'string',
