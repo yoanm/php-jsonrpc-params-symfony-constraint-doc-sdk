@@ -4,13 +4,17 @@
 
 [![Scrutinizer Build Status](https://img.shields.io/scrutinizer/build/g/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk.svg?label=Scrutinizer&logo=scrutinizer)](https://scrutinizer-ci.com/g/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk/build-status/master) [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk/master.svg?logo=scrutinizer)](https://scrutinizer-ci.com/g/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk/?branch=master) [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk/master.svg?logo=scrutinizer)](https://scrutinizer-ci.com/g/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk/?branch=master)
 
-[![Travis Build Status](https://img.shields.io/travis/com/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk/master.svg?label=Travis&logo=travis)](https://travis-ci.com/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk) <!-- NOT WORKING WITH travis-ci.com [![Travis PHP versions](https://img.shields.io/travis/php-v/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk.svg?logo=travis)](https://php.net/) --> [![Travis Symfony Versions](https://img.shields.io/badge/Symfony-v3%20%2F%20v4-8892BF.svg?logo=travis)](https://symfony.com/)
+[![Travis Build Status](https://img.shields.io/travis/com/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk/master.svg?label=Travis&logo=travis)](https://travis-ci.com/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk) <!-- NOT WORKING WITH travis-ci.com [![Travis PHP versions](https://img.shields.io/travis/php-v/yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk.svg?logo=travis)](https://php.net/) --> [![Travis Symfony Versions](https://img.shields.io/badge/Symfony-v4%20%2F%20v5-8892BF.svg?logo=travis)](https://symfony.com/)
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/yoanm/jsonrpc-params-symfony-constraint-doc-sdk.svg)](https://packagist.org/packages/yoanm/jsonrpc-params-symfony-constraint-doc-sdk) [![Packagist PHP version](https://img.shields.io/packagist/php-v/yoanm/jsonrpc-params-symfony-constraint-doc-sdk.svg)](https://packagist.org/packages/yoanm/jsonrpc-params-symfony-constraint-doc-sdk)
 
 PHP SDK to generate JSON-RPC documentation from symfony constraint
 
 See [yoanm/symfony-jsonrpc-params-sf-constraints-doc](https://github.com/yoanm/symfony-jsonrpc-params-sf-constraints-doc) for automatic dependency injection.
+
+## Versions
+ - Symfony v3/4 PHP >=7.1 : `v0.x`
+ - Symfony v4/5 PHP >=7.2 : `v1.0`
 
 ## How to use
 
