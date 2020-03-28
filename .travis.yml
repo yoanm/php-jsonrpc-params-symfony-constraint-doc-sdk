@@ -23,7 +23,7 @@ before_install:
   - phpenv config-rm xdebug.ini || true
 
 install:
-  - composer require symfony/validator:$SYMFONY_VERSION
+  - composer require symfony/validator:$SYMFONY_VERSION symfony/intl:$SYMFONY_VERSION symfony/expression-language:$SYMFONY_VERSION
   - make build
 script:
   - make test-technical
