@@ -2,6 +2,7 @@
 namespace Tests\Functional\App\Helper;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\TypeGuesser;
@@ -19,6 +20,8 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc;
  */
 class TypeGuesserTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var TypeGuesser */
     private $guesser;
 

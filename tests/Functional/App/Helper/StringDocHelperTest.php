@@ -2,6 +2,7 @@
 namespace Tests\Functional\Infra;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\StringDocHelper;
@@ -15,6 +16,7 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
  */
 class StringDocHelperTest extends TestCase
 {
+    use ProphecyTrait;
 
     /** @var StringDocHelper */
     private $helper;

@@ -3,6 +3,7 @@ namespace Tests\Functional\App\Helper\ConstraintPayloadDocHelper;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\ConstraintPayloadDocHelper;
@@ -15,6 +16,7 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
  */
 class AppendPayloadDocTest extends TestCase
 {
+    use ProphecyTrait;
 
     /** @var ConstraintPayloadDocHelper */
     private $helper;

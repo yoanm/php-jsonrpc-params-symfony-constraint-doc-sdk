@@ -165,6 +165,14 @@ class ConstraintTransformerContext extends AbstractContext
     }
 
     /**
+     * @Then constraint doc :methodName should contain the value :result
+     */
+    public function thenConstraintDocMethodShouldContain($methodName, $result)
+    {
+        $this->assertMethodCallContains($this->lastDocumenation, $methodName, $result);
+    }
+
+    /**
      * @Then constraint doc :methodName should return the number :result
      */
     public function thenConstraintDocMethodShouldReturnInteger($methodName, $result)
@@ -235,5 +243,15 @@ class ConstraintTransformerContext extends AbstractContext
     private function assertMethodCallResult($object, $methodName, $result): void
     {
         Assert::assertSame($result, call_user_func_array([$object, $methodName], []));
+    }
+
+    /**
+     * @param $object
+     * @param $methodName
+     * @param $result
+     */
+    private function assertMethodCallContains($object, $methodName, $result): void
+    {
+        Assert::assertStringContainsString($result, call_user_func_array([$object, $methodName], []));
     }
 }

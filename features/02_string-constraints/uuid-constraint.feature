@@ -9,7 +9,8 @@ Feature: ConstraintToParamsDocTransformer - Uuid constraint
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
     And constraint doc "getFormat" should return the value "uuid"
-    And constraint doc "getDescription" should return the value "Uuid (v1, v2, v3, v4, v5)"
+    # For sf 4 it's "Uuid (v1, v2, v3, v4, v5)" but for SF 5+ it's "Uuid (v1, v2, v3, v4, v5, v6, v7, v8)"
+    And constraint doc "getDescription" should contain the value "Uuid (v1, v2, v3, v4, v5"
     ## Check others properties
     And constraint doc "getName" should return null
     And constraint doc "getDefault" should return null

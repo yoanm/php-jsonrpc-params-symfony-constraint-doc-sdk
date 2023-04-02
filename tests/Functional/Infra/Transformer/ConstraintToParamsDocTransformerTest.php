@@ -3,6 +3,7 @@ namespace Tests\Functional\Infra\Transformer;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,6 +25,8 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc;
  */
 class ConstraintToParamsDocTransformerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var DocTypeHelper|ObjectProphecy */
     private $docTypeHelper;
     /** @var StringDocHelper|ObjectProphecy */
