@@ -98,7 +98,7 @@ class StringDocHelper
                 sprintf(
                     '%s%s%s',
                     $doc->getDescription(),
-                    strlen($doc->getDescription()) ? ' ' : '',
+                    strlen($doc->getDescription() ?? '') ? ' ' : '',
                     $formatDescription
                 )
             );

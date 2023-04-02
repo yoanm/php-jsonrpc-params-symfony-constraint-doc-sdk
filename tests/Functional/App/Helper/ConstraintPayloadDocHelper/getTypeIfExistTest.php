@@ -2,6 +2,7 @@
 namespace Tests\Functional\App\Helper\ConstraintPayloadDocHelper;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\ConstraintPayloadDocHelper;
 
@@ -12,6 +13,7 @@ use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\ConstraintPayloadDocHelpe
  */
 class GetTypeIfExistTest extends TestCase
 {
+    use ProphecyTrait;
 
     /** @var ConstraintPayloadDocHelper */
     private $helper;

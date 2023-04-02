@@ -2,6 +2,7 @@
 namespace Tests\Functional\App\Helper\MinMaxHelper;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Yoanm\JsonRpcParamsSymfonyConstraintDoc\App\Helper\MinMaxHelper;
@@ -14,6 +15,8 @@ use Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc;
  */
 class NumberTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var MinMaxHelper */
     private $helper;
 

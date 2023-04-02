@@ -98,7 +98,9 @@ jobs:
           # Issue with ParamterBag below 4.4.30 => https://github.com/symfony/symfony/commit/3eca446b21607ea1c7a865ece2dd8254c33679cc
           test '${{ matrix.symfony-version }}' = '4.4' && test '${{ matrix.php-version }}' = '8.2' && SF_VERSION=4.4.30
           composer require -W ${{ env.COMPOSER_OPTIONS }} ${{ matrix.composer-flag }} \
-            symfony/validator:^$SF_VERSION \
+            symfony/validator:$SF_VERSION \
+            symfony/intl:$SF_VERSION \
+            symfony/expression-language:$SF_VERSION \
           && composer update ${{ env.COMPOSER_OPTIONS }} ${{ matrix.composer-flag }} \
           && make build
 
@@ -243,7 +245,9 @@ jobs:
         run: |
           composer config minimum-stability dev \
           && composer require -W ${{ env.COMPOSER_OPTIONS }} \
-            symfony/validator:^${{ matrix.symfony-version }} \
+            symfony/validator:${{ matrix.symfony-version }} \
+            symfony/intl:${{ matrix.symfony-version }} \
+            symfony/expression-language:${{ matrix.symfony-version }} \
           && composer update ${{ env.COMPOSER_OPTIONS }} \
           && make build
 
