@@ -152,9 +152,9 @@ class TypeGuesserTest extends TestCase
                 'constraint' => new Assert\Choice(['multiple' => true]),
                 'expectedClass' => ArrayDoc::class,
             ],
-            'All to Array' => [
+            'All to Collection' => [
                 'constraint' => new Assert\All(['constraints' => []]),
-                'expectedClass' => ArrayDoc::class,
+                'expectedClass' => CollectionDoc::class,
             ],
             'Count to Collection' => [
                 'constraint' => new Assert\Count(['min' => 2]),
