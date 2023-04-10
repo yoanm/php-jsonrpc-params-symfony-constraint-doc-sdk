@@ -170,6 +170,21 @@ class TypeGuesser
         return new ObjectDoc();
     }
 
+    private function isStringConstraint(Constraint $constraint): bool
+    {
+        return null !== $this->getMatchingClassNameIn($constraint, self::STRING_CONSTRAINT_CLASS_LIST);
+    }
+
+    private function isBooleanConstraint(Constraint $constraint): bool
+    {
+        return null !== $this->getMatchingClassNameIn($constraint, self::BOOLEAN_CONSTRAINT_CLASS_LIST);
+    }
+
+    private function isNumberConstraint(Constraint $constraint): bool
+    {
+        return null !== $this->getMatchingClassNameIn($constraint, self::NUMBER_CONSTRAINT_CLASS_LIST);
+    }
+
     /**
      * @param Constraint $constraint
      *
@@ -202,11 +217,11 @@ class TypeGuesser
      */
     private function guessSimplePrimaryTypeFromConstraint(Constraint $constraint) : ?TypeDoc
     {
-        if (null !== $this->getMatchingClassNameIn($constraint, self::STRING_CONSTRAINT_CLASS_LIST)) {
+        if ($this->isStringConstraint($constraint)) {
             return new StringDoc();
-        } elseif (null !== $this->getMatchingClassNameIn($constraint, self::BOOLEAN_CONSTRAINT_CLASS_LIST)) {
+        } elseif ($this->isBooleanConstraint($constraint)) {
             return new BooleanDoc();
-        } elseif (null !== $this->getMatchingClassNameIn($constraint, self::NUMBER_CONSTRAINT_CLASS_LIST)) {
+        } elseif ($this->isNumberConstraint($constraint)) {
             return new NumberDoc();
         } elseif ($constraint instanceof Assert\Regex) {
             return new ScalarDoc();

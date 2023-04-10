@@ -171,9 +171,6 @@ class ConstraintToParamsDocTransformer
     }
 
     /**
-     * @param CollectionDoc   $doc
-     * @param Assert\All $constraint
-     *
      * @throws \ReflectionException
      */
     private function appendAllConstraintToDoc(CollectionDoc $doc, Assert\All $constraint) : void
