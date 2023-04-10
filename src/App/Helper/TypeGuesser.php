@@ -38,10 +38,40 @@ class TypeGuesser
         Assert\Luhn::class,
         Assert\Url::class,
         Assert\Uuid::class,
+        Assert\ExpressionSyntax::class,
+        Assert\ExpressionLanguageSyntax::class,
+        Assert\Hostname::class,
+        Assert\Cidr::class,
+        Assert\Json::class,
+        Assert\Ulid::class,
+        Assert\CssColor::class,
+        Assert\Timezone::class,
+        Assert\Isin::class,
+        Assert\Blank::class,
+    ];
+    const NUMBER_CONSTRAINT_CLASS_LIST = [
+        Assert\DivisibleBy::class,
+        Assert\Positive::class,
+        Assert\PositiveOrZero::class,
+        Assert\Negative::class,
+        Assert\NegativeOrZero::class,
     ];
     const BOOLEAN_CONSTRAINT_CLASS_LIST = [
         Assert\IsTrue::class,
         Assert\IsFalse::class,
+    ];
+    const OBJECT_CONSTRAINT_CLASS_LIST = [
+        Assert\Valid::class,
+        Assert\Cascade::class,
+        Assert\Traverse::class,
+    ];
+    const COLLECTION_CONSTRAINT_CLASS_LIST = [
+        // Count is primarily applied on array, but can also be used with an object implementing Countable
+        Assert\Count::class,
+        // All is primarily applied on array, but can also be used with an object implementing Traversable
+        Assert\All::class,
+        // Unique is primarily applied on array, but can also be used with an object implementing Traversable
+        Assert\Unique::class,
     ];
 
     /**
@@ -79,13 +109,15 @@ class TypeGuesser
      */
     protected function guessTypeFromConstraint(Constraint $constraint) : ?TypeDoc
     {
-        if (null !== ($type = $this->guessPrimaryTypeFromConstraint($constraint))) {
+        // Try to guess primary types
+        $type = $this->guessSimplePrimaryTypeFromConstraint($constraint);
+        if (null !== $type) {
             return $type;
-        }
-
-        // If primary type is still not defined
-        $constraintClass = get_class($constraint);
-        if (Assert\Count::class == $constraintClass) {
+        } elseif ($constraint instanceof Assert\DateTime) {
+            return $this->guessDateTimeType($constraint);
+        } elseif ($constraint instanceof Assert\Collection) {
+            return $this->guessCollectionType($constraint);
+        } elseif ($this->isCollectionType($constraint)) {
             return new CollectionDoc();
         }
 
@@ -109,25 +141,6 @@ class TypeGuesser
     }
 
     /**
-     * @param Constraint $constraint
-     *
-     * @return null|ArrayDoc|BooleanDoc|ObjectDoc|ScalarDoc|StringDoc
-     */
-    private function guessPrimaryTypeFromConstraint(Constraint $constraint) : ?TypeDoc
-    {
-        // Try to guess primary types
-        if (null !== ($type = $this->guessSimplePrimaryTypeFromConstraint($constraint))) {
-            return $type;
-        } elseif ($constraint instanceof Assert\DateTime) {
-            return $this->guessDateTimeType($constraint);
-        } elseif ($constraint instanceof Assert\Collection) {
-            return $this->guestCollectionType($constraint);
-        }
-
-        return null;
-    }
-
-    /**
      * @param Assert\DateTime $constraint
      *
      * @return ScalarDoc|StringDoc
@@ -146,10 +159,10 @@ class TypeGuesser
      *
      * @return ArrayDoc|ObjectDoc
      */
-    private function guestCollectionType(Assert\Collection $constraint) : TypeDoc
+    private function guessCollectionType(Assert\Collection $constraint) : TypeDoc
     {
-        // If only integer => array, else object
-        $integerKeyList = array_filter(array_keys($constraint->fields), 'is_int');
+        // If only integer keys (strict check) => array, else object
+        $integerKeyList = array_filter(array_keys($constraint->fields), fn ($v) => (int)$v === $v);
         if (count($constraint->fields) === count($integerKeyList)) {
             return new ArrayDoc();
         }
@@ -164,10 +177,22 @@ class TypeGuesser
      */
     private function isArrayConstraint(Constraint $constraint): bool
     {
-        return $constraint instanceof Assert\All // << Applied only on array
-            || ($constraint instanceof Assert\Choice
+        return ($constraint instanceof Assert\Choice
                 && true === $constraint->multiple // << expect an array multiple choices
             );
+    }
+
+    private function isObjectType(Constraint $constraint): bool
+    {
+        return null !== $this->getMatchingClassNameIn($constraint, self::OBJECT_CONSTRAINT_CLASS_LIST);
+    }
+
+    /**
+     * Must be called at the end in case all others checks failed !
+     */
+    private function isCollectionType(Constraint $constraint): bool
+    {
+        return null !== $this->getMatchingClassNameIn($constraint, self::COLLECTION_CONSTRAINT_CLASS_LIST);
     }
 
     /**
@@ -181,10 +206,14 @@ class TypeGuesser
             return new StringDoc();
         } elseif (null !== $this->getMatchingClassNameIn($constraint, self::BOOLEAN_CONSTRAINT_CLASS_LIST)) {
             return new BooleanDoc();
+        } elseif (null !== $this->getMatchingClassNameIn($constraint, self::NUMBER_CONSTRAINT_CLASS_LIST)) {
+            return new NumberDoc();
         } elseif ($constraint instanceof Assert\Regex) {
             return new ScalarDoc();
         } elseif ($this->isArrayConstraint($constraint)) {
             return new ArrayDoc();
+        } elseif ($this->isObjectType($constraint)) {
+            return new ObjectDoc();
         }
 
         return null;
