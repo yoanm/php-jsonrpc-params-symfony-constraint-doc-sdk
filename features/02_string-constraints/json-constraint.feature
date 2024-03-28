@@ -1,18 +1,17 @@
-Feature: ConstraintToParamsDocTransformer - Uuid constraint
+Feature: ConstraintToParamsDocTransformer - Json constraint
 
-  Scenario: Simple Uuid constraint
+  Scenario: Simple Json constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\Uuid();
+    return new ConstraintNS\Json();
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
-    And constraint doc "getFormat" should return the value "uuid"
-    # For sf 4 it's "Uuid (v1, v2, v3, v4, v5)" but for SF 5+ it's "Uuid (v1, v2, v3, v4, v5, v6, v7, v8)"
-    And constraint doc "getDescription" should contain the value "Uuid (v1, v2, v3, v4, v5"
+    And constraint doc "getFormat" should return the value "json"
     ## Check others properties
     And constraint doc "getName" should return null
+    And constraint doc "getDescription" should return null
     And constraint doc "getDefault" should return null
     And constraint doc "getExample" should return null
     And constraint doc "isNullable" should return true
@@ -21,14 +20,14 @@ Feature: ConstraintToParamsDocTransformer - Uuid constraint
     And constraint doc "getMinLength" should return null
     And constraint doc "getMaxLength" should return null
 
-  Scenario: Fully configured Uuid constraint
+  Scenario: Fully configured Json constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\Uuid([
-      'versions' => [3, 4, 5],
+    return new ConstraintNS\Json([
       'payload' => [
         'documentation' => [
+          'description' => 'description',
           'default' => 'default',
           'example' => 'example',
           'required' => true,
@@ -39,8 +38,8 @@ Feature: ConstraintToParamsDocTransformer - Uuid constraint
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
-    And constraint doc "getFormat" should return the value "uuid"
-    And constraint doc "getDescription" should return the value "Uuid (v3, v4, v5)"
+    And constraint doc "getFormat" should return the value "json"
+    And constraint doc "getDescription" should return the value "description"
     And constraint doc "getDefault" should return the value "default"
     And constraint doc "getExample" should return the value "example"
     And constraint doc "isNullable" should return false
@@ -50,3 +49,4 @@ Feature: ConstraintToParamsDocTransformer - Uuid constraint
     And constraint doc "getAllowedValueList" should return an empty array
     And constraint doc "getMinLength" should return null
     And constraint doc "getMaxLength" should return null
+

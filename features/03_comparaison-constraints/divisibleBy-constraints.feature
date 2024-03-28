@@ -1,14 +1,13 @@
-Feature: ConstraintToParamsDocTransformer - Url constraint
+Feature: ConstraintToParamsDocTransformer - DivisibleBy constraint
 
-  Scenario: Simple Url constraint
+  Scenario: Simple DivisibleBy constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\Url();
+    return new ConstraintNS\DivisibleBy(0.25);
     """
     When I transform constraint
-    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
-    And constraint doc "getFormat" should return the value "url"
+    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc"
     ## Check others properties
     And constraint doc "getName" should return null
     And constraint doc "getDescription" should return null
@@ -16,15 +15,13 @@ Feature: ConstraintToParamsDocTransformer - Url constraint
     And constraint doc "getExample" should return null
     And constraint doc "isNullable" should return true
     And constraint doc "isRequired" should return false
-    And constraint doc "getAllowedValueList" should return an empty array
-    And constraint doc "getMinLength" should return null
-    And constraint doc "getMaxLength" should return null
 
-  Scenario: Fully configured Url constraint
+  Scenario: Fully configured DivisibleBy constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\Url([
+    return new ConstraintNS\DivisibleBy([
+      'value' => 5,
       'payload' => [
         'documentation' => [
           'description' => 'description',
@@ -37,8 +34,7 @@ Feature: ConstraintToParamsDocTransformer - Url constraint
     ]);
     """
     When I transform constraint
-    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
-    And constraint doc "getFormat" should return the value "url"
+    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\NumberDoc"
     And constraint doc "getDescription" should return the value "description"
     And constraint doc "getDefault" should return the value "default"
     And constraint doc "getExample" should return the value "example"
@@ -46,6 +42,3 @@ Feature: ConstraintToParamsDocTransformer - Url constraint
     And constraint doc "isRequired" should return true
     ## Check others properties
     And constraint doc "getName" should return null
-    And constraint doc "getAllowedValueList" should return an empty array
-    And constraint doc "getMinLength" should return null
-    And constraint doc "getMaxLength" should return null

@@ -23,7 +23,12 @@ Feature: ConstraintToParamsDocTransformer - NotBlank & Blank constraints
     return new ConstraintNS\NotBlank([
       'payload' => [
         'documentation' => [
-          'type' => 'string'
+          'type' => 'string',
+          'description' => 'description',
+          'default' => 'default',
+          'example' => 'example',
+          'required' => true,
+          'nullable' => false
         ]
       ]
     ]);
@@ -33,11 +38,11 @@ Feature: ConstraintToParamsDocTransformer - NotBlank & Blank constraints
     And constraint doc "getMinLength" should return the number 1
     ## Check others properties
     And constraint doc "getName" should return null
-    And constraint doc "getDescription" should return null
-    And constraint doc "getDefault" should return null
-    And constraint doc "getExample" should return null
-    And constraint doc "isRequired" should return false
-    And constraint doc "isNullable" should return true
+    And constraint doc "getDescription" should return the value "description"
+    And constraint doc "getDefault" should return the value "default"
+    And constraint doc "getExample" should return the value "example"
+    And constraint doc "isRequired" should return true
+    And constraint doc "isNullable" should return false
     And constraint doc "getAllowedValueList" should return an empty array
     And constraint doc "getFormat" should return null
     And constraint doc "getMaxLength" should return null
@@ -49,7 +54,12 @@ Feature: ConstraintToParamsDocTransformer - NotBlank & Blank constraints
     return new ConstraintNS\NotBlank([
       'payload' => [
         'documentation' => [
-          'type' => 'array'
+          'type' => 'array',
+          'description' => 'description',
+          'default' => 'default',
+          'example' => 'example',
+          'required' => true,
+          'nullable' => false
         ]
       ]
     ]);
@@ -59,11 +69,11 @@ Feature: ConstraintToParamsDocTransformer - NotBlank & Blank constraints
     And constraint doc "getMinItem" should return the number 1
     ## Check others properties
     And constraint doc "getName" should return null
-    And constraint doc "getDescription" should return null
-    And constraint doc "getDefault" should return null
-    And constraint doc "getExample" should return null
-    And constraint doc "isRequired" should return false
-    And constraint doc "isNullable" should return true
+    And constraint doc "getDescription" should return the value "description"
+    And constraint doc "getDefault" should return the value "default"
+    And constraint doc "getExample" should return the value "example"
+    And constraint doc "isRequired" should return true
+    And constraint doc "isNullable" should return false
     And constraint doc "getAllowedValueList" should return an empty array
     And constraint doc "getSiblingList" should return an empty array
     And constraint doc "getMaxItem" should return null
@@ -78,7 +88,12 @@ Feature: ConstraintToParamsDocTransformer - NotBlank & Blank constraints
     return new ConstraintNS\Blank([
       'payload' => [
         'documentation' => [
-          'type' => 'string'
+          'type' => 'string',
+          'description' => 'description',
+          'default' => 'default',
+          'example' => 'example',
+          'required' => true,
+          'nullable' => false
         ]
       ]
     ]);
@@ -88,11 +103,11 @@ Feature: ConstraintToParamsDocTransformer - NotBlank & Blank constraints
     And constraint doc "getMaxLength" should return the number 0
     ## Check others properties
     And constraint doc "getName" should return null
-    And constraint doc "getDescription" should return null
-    And constraint doc "getDefault" should return null
-    And constraint doc "getExample" should return null
-    And constraint doc "isRequired" should return false
-    And constraint doc "isNullable" should return true
+    And constraint doc "getDescription" should return the value "description"
+    And constraint doc "getDefault" should return the value "default"
+    And constraint doc "getExample" should return the value "example"
+    And constraint doc "isRequired" should return true
+    And constraint doc "isNullable" should return false
     And constraint doc "getAllowedValueList" should return an empty array
     And constraint doc "getFormat" should return null
     And constraint doc "getMinLength" should return null
