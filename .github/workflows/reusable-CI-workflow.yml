@@ -1,18 +1,7 @@
-name: 'CI'
-on: # Build any PRs and main branch changes
-  workflow_dispatch: # Allows to run the workflow manually from the Actions tab
-  pull_request:
-    types:
-      - opened
-      - synchronize
-  push:
-    branches: [ master ]
-  schedule:
-    - cron: '0 0 1 * *' # Every month
+name: 'CI reusable workflow'
 
-concurrency:
-  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
-  cancel-in-progress: true
+on:
+  workflow_call:
 
 env:
   TEST_OUTPUT_STYLE: pretty
