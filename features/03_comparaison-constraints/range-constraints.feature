@@ -87,7 +87,12 @@ Feature: ConstraintToParamsDocTransformer - Range constraint
       'max' => '2018-11-15',
       'payload' => [
         'documentation' => [
-          'type' => 'string'
+          'type' => 'string',
+          'description' => 'description',
+          'default' => 'default',
+          'example' => 'example',
+          'required' => true,
+          'nullable' => false
         ]
       ]
     ]);
@@ -97,11 +102,11 @@ Feature: ConstraintToParamsDocTransformer - Range constraint
     And constraint doc "getFormat" should return the value "datetime"
     ## Check others properties
     And constraint doc "getName" should return null
-    And constraint doc "getDescription" should return null
-    And constraint doc "getDefault" should return null
-    And constraint doc "getExample" should return null
-    And constraint doc "isNullable" should return true
-    And constraint doc "isRequired" should return false
+    And constraint doc "getDescription" should return the value "description"
+    And constraint doc "getDefault" should return the value "default"
+    And constraint doc "getExample" should return the value "example"
+    And constraint doc "isNullable" should return false
+    And constraint doc "isRequired" should return true
     And constraint doc "getAllowedValueList" should return an empty array
     And constraint doc "getMinLength" should return null
     And constraint doc "getMaxLength" should return null

@@ -4,11 +4,10 @@ Feature: ConstraintToParamsDocTransformer - Special constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\All([new ConstraintNS\Type('string')]);
+    return new ConstraintNS\Type('array');
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc"
-    And constraint doc item validation should be of type "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
     ## Check others properties
     And constraint doc "getName" should return null
     And constraint doc "getDescription" should return null

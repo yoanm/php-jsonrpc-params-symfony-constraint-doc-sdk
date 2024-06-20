@@ -111,7 +111,7 @@ class ConstraintToParamsDocTransformer
             foreach ($callbackResultList as $subConstraint) {
                 $this->appendToDoc($doc, $subConstraint);
             }
-        } elseif ($doc instanceof ArrayDoc && $constraint instanceof Assert\All) {
+        } elseif ($doc instanceof CollectionDoc && $constraint instanceof Assert\All) {
             $this->appendAllConstraintToDoc($doc, $constraint);
         } else {
             $this->basicAppendToDoc($doc, $constraint);
@@ -171,12 +171,9 @@ class ConstraintToParamsDocTransformer
     }
 
     /**
-     * @param ArrayDoc   $doc
-     * @param Assert\All $constraint
-     *
      * @throws \ReflectionException
      */
-    private function appendAllConstraintToDoc(ArrayDoc $doc, Assert\All $constraint) : void
+    private function appendAllConstraintToDoc(CollectionDoc $doc, Assert\All $constraint) : void
     {
         $itemDoc = $this->docTypeHelper->guess($constraint->constraints);
         foreach ($constraint->constraints as $subConstraint) {

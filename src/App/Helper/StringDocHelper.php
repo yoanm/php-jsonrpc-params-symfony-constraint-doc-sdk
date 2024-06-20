@@ -33,6 +33,12 @@ class StringDocHelper
         Constraints\Time::class,
         Constraints\Url::class,
         Constraints\Uuid::class,
+        Constraints\Hostname::class,
+        Constraints\Cidr::class,
+        Constraints\Json::class,
+        Constraints\Ulid::class,
+        Constraints\Image::class,
+        Constraints\Isin::class,
     ];
 
     const CONSTRAINT_WITH_FORMAT_FROM_PROPERTY = [

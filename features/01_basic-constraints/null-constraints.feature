@@ -27,7 +27,12 @@ Feature: ConstraintToParamsDocTransformer - NotNull & IsNull constraints
     return new ConstraintNS\NotNull([
       'payload' => [
         'documentation' => [
-          'type' => 'string'
+          'type' => 'string',
+          'description' => 'description',
+          'default' => 'default',
+          'example' => 'example',
+          'required' => true,
+          'nullable' => false
         ]
       ]
     ]);
@@ -37,10 +42,11 @@ Feature: ConstraintToParamsDocTransformer - NotNull & IsNull constraints
     And constraint doc "isNullable" should return false
     ## Check others properties
     And constraint doc "getName" should return null
-    And constraint doc "getDescription" should return null
-    And constraint doc "getDefault" should return null
-    And constraint doc "getExample" should return null
-    And constraint doc "isRequired" should return false
+    And constraint doc "getDescription" should return the value "description"
+    And constraint doc "getDefault" should return the value "default"
+    And constraint doc "getExample" should return the value "example"
+    And constraint doc "isRequired" should return true
+    And constraint doc "isNullable" should return false
     And constraint doc "getAllowedValueList" should return an empty array
     And constraint doc "getFormat" should return null
     And constraint doc "getMinLength" should return null

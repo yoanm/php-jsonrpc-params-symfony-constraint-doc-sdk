@@ -1,14 +1,13 @@
-Feature: ConstraintToParamsDocTransformer - Url constraint
+Feature: ConstraintToParamsDocTransformer - Traverse constraint
 
-  Scenario: Simple Url constraint
+  Scenario: Simple Traverse constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\Url();
+    return new ConstraintNS\Traverse();
     """
     When I transform constraint
-    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
-    And constraint doc "getFormat" should return the value "url"
+    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc"
     ## Check others properties
     And constraint doc "getName" should return null
     And constraint doc "getDescription" should return null
@@ -17,15 +16,12 @@ Feature: ConstraintToParamsDocTransformer - Url constraint
     And constraint doc "isNullable" should return true
     And constraint doc "isRequired" should return false
     And constraint doc "getAllowedValueList" should return an empty array
-    And constraint doc "getMinLength" should return null
-    And constraint doc "getMaxLength" should return null
 
-  Scenario: Fully configured Url constraint
+  Scenario: Fully configured Traverse constraint with string type specified
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\Url([
-      'protocols' => ['http'],
+    return new ConstraintNS\Traverse([
       'payload' => [
         'documentation' => [
           'description' => 'description',
@@ -38,8 +34,7 @@ Feature: ConstraintToParamsDocTransformer - Url constraint
     ]);
     """
     When I transform constraint
-    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
-    And constraint doc "getFormat" should return the value "url"
+    Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\ObjectDoc"
     And constraint doc "getDescription" should return the value "description"
     And constraint doc "getDefault" should return the value "default"
     And constraint doc "getExample" should return the value "example"
@@ -48,5 +43,3 @@ Feature: ConstraintToParamsDocTransformer - Url constraint
     ## Check others properties
     And constraint doc "getName" should return null
     And constraint doc "getAllowedValueList" should return an empty array
-    And constraint doc "getMinLength" should return null
-    And constraint doc "getMaxLength" should return null
