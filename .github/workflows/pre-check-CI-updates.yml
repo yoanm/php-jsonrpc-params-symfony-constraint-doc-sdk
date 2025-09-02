@@ -17,6 +17,10 @@ on:
       - '.github/workflows/reusable-CI-workflow.yml'
       - '.github/workflows/reusable-coverage-upload-workflow.yml'
 
+permissions:
+  contents: read
+  checks: write # For the check run creation !
+
 concurrency:
   group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
   cancel-in-progress: true
@@ -29,7 +33,7 @@ jobs:
     uses: ./.github/workflows/reusable-CI-workflow.yml
 
   upload:
-    name: Upload
+    name: Coverage
     needs: [tests]
     permissions:
       contents: read
