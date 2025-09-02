@@ -7,7 +7,7 @@ permissions:
 
 jobs:
   dependabot:
-    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'yoanm/php-jsonrpc-server-doc-sdk'
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'yoanm/php-jsonrpc-params-symfony-constraint-doc-sdk'
     runs-on: ubuntu-latest
     permissions:
       contents: write
