@@ -22,9 +22,9 @@ See [yoanm/symfony-jsonrpc-params-sf-constraints-doc](https://github.com/yoanm/s
 
 ## Versions
 
-*   Symfony v3/4 PHP >=7.1 : `v0.x`
-*   Symfony v4/5 PHP >=7.2 : `v1.0`
-*   Symfony v4.4/5.4/6.x PHP ^8.0 : `v1.1`
+* Symfony v3/4 PHP >=7.1 : `v0.x`
+* Symfony v4/5 PHP >=7.2 : `v1.0`
+* Symfony v4.4/5.4/6.x PHP ^8.0 : `v1.1`
 
 ## How to use
 
