@@ -4,9 +4,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\GreaterThan([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\GreaterThan(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'default' => 'default',
@@ -15,7 +18,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc"
@@ -31,9 +34,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\GreaterThan([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\GreaterThan(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'integer',
           'description' => 'description',
@@ -43,7 +49,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\IntegerDoc"
@@ -63,9 +69,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\GreaterThan([
-      'value' => 2.4,
-      'payload' => [
+    return new ConstraintNS\GreaterThan(
+      2.4,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'float',
           'description' => 'description',
@@ -75,7 +84,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc"
@@ -95,9 +104,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\GreaterThan([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\GreaterThan(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'array',
           'description' => 'description',
@@ -107,7 +119,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc"
@@ -128,9 +140,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\GreaterThanOrEqual([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\GreaterThanOrEqual(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'default' => 'default',
@@ -139,7 +154,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc"
@@ -155,9 +170,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\GreaterThanOrEqual([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\GreaterThanOrEqual(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'integer',
           'description' => 'description',
@@ -167,7 +185,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\IntegerDoc"
@@ -187,9 +205,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\GreaterThanOrEqual([
-      'value' => 2.4,
-      'payload' => [
+    return new ConstraintNS\GreaterThanOrEqual(
+      2.4,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'float',
           'description' => 'description',
@@ -199,7 +220,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc"
@@ -219,9 +240,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\GreaterThanOrEqual([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\GreaterThanOrEqual(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'array',
           'description' => 'description',
@@ -231,7 +255,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured GreaterThan & Great
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc"

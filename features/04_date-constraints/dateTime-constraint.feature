@@ -25,9 +25,11 @@ Feature: ConstraintToParamsDocTransformer - DateTime constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\DateTime([
-      'format' => 'Y-m-d -- H:i:s',
-      'payload' => [
+    return new ConstraintNS\DateTime(
+      'Y-m-d -- H:i:s',
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'default' => 'default',
@@ -36,7 +38,7 @@ Feature: ConstraintToParamsDocTransformer - DateTime constraint
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
@@ -51,4 +53,3 @@ Feature: ConstraintToParamsDocTransformer - DateTime constraint
     And constraint doc "getAllowedValueList" should return an empty array
     And constraint doc "getMinLength" should return null
     And constraint doc "getMaxLength" should return null
-

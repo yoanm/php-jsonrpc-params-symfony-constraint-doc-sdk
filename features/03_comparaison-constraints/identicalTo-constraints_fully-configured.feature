@@ -4,16 +4,19 @@ Feature: ConstraintToParamsDocTransformer - Fully configured IdenticalTo & NotId
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\IdenticalTo([
-      'value' => 'expected-text',
-      'payload' => [
+    return new ConstraintNS\IdenticalTo(
+      'expected-text',
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'required' => true,
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"
@@ -36,16 +39,19 @@ Feature: ConstraintToParamsDocTransformer - Fully configured IdenticalTo & NotId
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\IdenticalTo([
-      'value' => true,
-      'payload' => [
+    return new ConstraintNS\IdenticalTo(
+      true,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'required' => true,
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\BooleanDoc"
@@ -65,16 +71,19 @@ Feature: ConstraintToParamsDocTransformer - Fully configured IdenticalTo & NotId
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\IdenticalTo([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\IdenticalTo(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'required' => true,
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\IntegerDoc"
@@ -98,16 +107,19 @@ Feature: ConstraintToParamsDocTransformer - Fully configured IdenticalTo & NotId
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\IdenticalTo([
-      'value' => 2.3,
-      'payload' => [
+    return new ConstraintNS\IdenticalTo(
+      2.3,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'required' => true,
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc"
@@ -131,9 +143,12 @@ Feature: ConstraintToParamsDocTransformer - Fully configured IdenticalTo & NotId
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\NotIdenticalTo([
-      'value' => 'not-expected-value',
-      'payload' => [
+    return new ConstraintNS\NotIdenticalTo(
+      'not-expected-value',
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'default' => 'default',
@@ -142,7 +157,7 @@ Feature: ConstraintToParamsDocTransformer - Fully configured IdenticalTo & NotId
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc"
