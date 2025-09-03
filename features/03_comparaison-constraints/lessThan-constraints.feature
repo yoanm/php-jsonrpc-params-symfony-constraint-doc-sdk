@@ -21,14 +21,17 @@ Feature: ConstraintToParamsDocTransformer - LessThan & LessThanOrEqual constrain
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\LessThan([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\LessThan(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'integer'
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\IntegerDoc"
@@ -49,14 +52,17 @@ Feature: ConstraintToParamsDocTransformer - LessThan & LessThanOrEqual constrain
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\LessThan([
-      'value' => 2.4,
-      'payload' => [
+    return new ConstraintNS\LessThan(
+      2.4,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'float'
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc"
@@ -77,14 +83,17 @@ Feature: ConstraintToParamsDocTransformer - LessThan & LessThanOrEqual constrain
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\LessThan([
-      'value' => 4,
-      'payload' => [
+    return new ConstraintNS\LessThan(
+      4,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'array'
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc"
@@ -123,14 +132,17 @@ Feature: ConstraintToParamsDocTransformer - LessThan & LessThanOrEqual constrain
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\LessThanOrEqual([
-      'value' => 2,
-      'payload' => [
+    return new ConstraintNS\LessThanOrEqual(
+      2,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'integer'
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\IntegerDoc"
@@ -151,14 +163,17 @@ Feature: ConstraintToParamsDocTransformer - LessThan & LessThanOrEqual constrain
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\LessThanOrEqual([
-      'value' => 2.4,
-      'payload' => [
+    return new ConstraintNS\LessThanOrEqual(
+      2.4,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'float'
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\FloatDoc"
@@ -179,14 +194,17 @@ Feature: ConstraintToParamsDocTransformer - LessThan & LessThanOrEqual constrain
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\LessThanOrEqual([
-      'value' => 4,
-      'payload' => [
+    return new ConstraintNS\LessThanOrEqual(
+      4,
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'type' => 'array'
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\ArrayDoc"

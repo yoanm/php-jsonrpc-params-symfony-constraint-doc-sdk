@@ -42,9 +42,12 @@ Feature: ConstraintToParamsDocTransformer - EqualTo & NotEqualTo constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\EqualTo([
-      'value' => 'expected-text',
-      'payload' => [
+    return new ConstraintNS\EqualTo(
+      'expected-text',
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'default' => 'default',
@@ -53,7 +56,7 @@ Feature: ConstraintToParamsDocTransformer - EqualTo & NotEqualTo constraint
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc"
@@ -73,9 +76,12 @@ Feature: ConstraintToParamsDocTransformer - EqualTo & NotEqualTo constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\NotEqualTo([
-      'value' => 'expected-text',
-      'payload' => [
+    return new ConstraintNS\NotEqualTo(
+      'expected-text',
+      null,
+      null,
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'default' => 'default',
@@ -84,7 +90,7 @@ Feature: ConstraintToParamsDocTransformer - EqualTo & NotEqualTo constraint
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\TypeDoc"

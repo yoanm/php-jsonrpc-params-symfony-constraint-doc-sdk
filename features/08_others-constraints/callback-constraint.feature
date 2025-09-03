@@ -28,13 +28,14 @@ Feature: ConstraintToParamsDocTransformer - Callback constraint
     Given I have the following Constraint:
     """
     use Symfony\Component\Validator\Constraints as ConstraintNS;
-    return new ConstraintNS\Callback([
-      'callback' => function () {
+    return new ConstraintNS\Callback(
+      function () {
         return new ConstraintNS\Required(
           new ConstraintNS\Type('string')
         );
       },
-      'payload' => [
+      null,
+      [
         'documentation' => [
           'description' => 'description',
           'default' => 'default',
@@ -42,7 +43,7 @@ Feature: ConstraintToParamsDocTransformer - Callback constraint
           'nullable' => false
         ]
       ]
-    ]);
+    );
     """
     When I transform constraint
     Then I should have a constraint doc of class "Yoanm\JsonRpcServerDoc\Domain\Model\Type\StringDoc"

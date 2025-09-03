@@ -125,7 +125,7 @@ class TypeGuesserTest extends TestCase
                 'expectedClass' => StringDoc::class,
             ],
             'DateTime to Scalar' => [
-                'constraint' => new Assert\DateTime(['format' => 'U']),
+                'constraint' => new Assert\DateTime('U'),
                 'expectedClass' => ScalarDoc::class,
             ],
             'DateTime to String' => [
@@ -141,11 +141,11 @@ class TypeGuesserTest extends TestCase
                 'expectedClass' => BooleanDoc::class,
             ],
             'Collection to Array' => [
-                'constraint' => new Assert\Collection(['fields' => [0 => [], 1 => []]]),
+                'constraint' => new Assert\Collection([0 => [], 1 => []]),
                 'expectedClass' => ArrayDoc::class,
             ],
             'Collection to Object' => [
-                'constraint' => new Assert\Collection(['fields' => ['a' => [], 'b' => []]]),
+                'constraint' => new Assert\Collection(['a' => [], 'b' => []]),
                 'expectedClass' => ObjectDoc::class,
             ],
             'Choice (multiple) to Array' => [

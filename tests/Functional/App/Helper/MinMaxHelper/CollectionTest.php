@@ -91,34 +91,46 @@ class CollectionTest extends TestCase
                 'expectedMax' => null,
             ],
             'GreaterThan constraint with array type' => [
-                'constraint' => new Assert\GreaterThan([
-                    'value' => 2,
-                    'payload' => ['documentation' => ['type' => 'array']]
-                ]),
+                'constraint' => new Assert\GreaterThan(
+                    2,
+                    null,
+                    null,
+                    null,
+                    ['documentation' => ['type' => 'array']]
+                ),
                 'expectedMin' => 3,
                 'expectedMax' => null,
             ],
             'GreaterThanOrEqual constraint with array type' => [
-                'constraint' => new Assert\GreaterThanOrEqual([
-                    'value' => 2,
-                    'payload' => ['documentation' => ['type' => 'array']]
-                ]),
+                'constraint' => new Assert\GreaterThanOrEqual(
+                    2,
+                    null,
+                    null,
+                    null,
+                    ['documentation' => ['type' => 'array']]
+                ),
                 'expectedMin' => 2,
                 'expectedMax' => null,
             ],
             'LessThan constraint with array type' => [
-                'constraint' => new Assert\LessThan([
-                    'value' => 3,
-                    'payload' => ['documentation' => ['type' => 'array']]
-                ]),
+                'constraint' => new Assert\LessThan(
+                    3,
+                    null,
+                    null,
+                    null,
+                    ['documentation' => ['type' => 'array']]
+                ),
                 'expectedMin' => null,
                 'expectedMax' => 2,
             ],
             'LessThanOrEqual constraint with array type' => [
-                'constraint' => new Assert\LessThanOrEqual([
-                    'value' => 3,
-                    'payload' => ['documentation' => ['type' => 'array']]
-                ]),
+                'constraint' => new Assert\LessThanOrEqual(
+                    3,
+                    null,
+                    null,
+                    null,
+                    ['documentation' => ['type' => 'array']]
+                ),
                 'expectedMin' => null,
                 'expectedMax' => 3,
             ],
